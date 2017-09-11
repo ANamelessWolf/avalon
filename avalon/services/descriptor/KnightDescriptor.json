@@ -1,0 +1,62 @@
+{
+    "services": [
+        {
+            "title": "Add User",
+            "url": "AvalonService.php/Service/Knight/Task/Add/",
+            "method": "POST",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "Service",
+                        "param_value": "Knight",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "Task",
+                        "param_value": "Add",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ],
+                "body": {
+                    "parameters": [
+                        {
+                            "param_name": "user_name",
+                            "param_type": "string"
+                        },
+                        {
+                            "param_name": "password",
+                            "param_type": "string"
+                        }
+                    ],
+                    "example": {
+                        "user_name": "Wolf-sama",
+                        "password": "Necron98"
+                    },
+                    "response": {
+                        "success": {
+                            "code": 401,
+                            "content": {}
+                        },
+                        "error": [
+                            {
+                                "code": 401,
+                                "content": {}
+                            }
+                        ]
+                    },
+                    "sample": {}
+                }
+            }
+        }
+    ]
+}
