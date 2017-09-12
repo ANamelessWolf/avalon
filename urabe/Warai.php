@@ -171,6 +171,11 @@ const SERVICE_KNIGHT_GROUP = 'Groups';
 */
 const TASK_ADD = 'Add';
 /**
+* @var string TASK_LINK
+* The task name to link an element to another
+*/
+const TASK_LINK = 'Link';
+/**
 * @var string TASK_SELECT
 * The task name to select an element to the table
 */

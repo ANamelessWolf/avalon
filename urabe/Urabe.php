@@ -137,8 +137,7 @@ class Urabe
         return json_encode($result);
     }
     /**
-     * Gets the first value found on the result. This function is used
-     * to select max values or to get count results.
+     * Gets the first value found on the result. 
      *
      * @param string $query The query string. 
      * @return string The first value.

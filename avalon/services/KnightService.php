@@ -5,6 +5,7 @@ include_once "/../../alice/Caterpillar.php";
 include_once "/../Chivalry.php";
 include_once "/../Excalibur.php";
 include_once "/../Morgana.php";
+include_once "KnightGroupService.php";
 /**
  * The Knight Service is in charge to administrate the users that are used on the Avalon database
  * A web service to administrate the Knight service table
@@ -47,6 +48,11 @@ class KnightService extends HasamiWrapper
                     case TASK_ADD :
                         $response = $this->join_the_realm();
                         break;
+                    case TASK_SELECT :
+                        $response = $this->get_user_id();
+                        break;
+                    case TASK_LINK :
+                        $response = $this->join_group();
                     default :
                         throw new Exception(ERR_TASK_UNDEFINED);
                 }
@@ -60,6 +66,7 @@ class KnightService extends HasamiWrapper
      * This function adds a new user to the database
      * @param string $user_name The user name, if this is null the value is extracted from the body.
      * @param string $password The user password, if this is null the value is extracted from the body.
+     * @return string The server response
      */
     public function join_the_realm($user_name = NULL, $password = NULL)
     {
@@ -76,6 +83,51 @@ class KnightService extends HasamiWrapper
             unset($result[0]->{KNIGHT_FIELD_PASS});
             return json_encode($result);
         }, $user_name, $password);
+    }
+    /**
+     * Gets the group id from a user name
+     *
+     * @param string $user_name The user name
+     * @return string The server response
+     */
+    public function get_user_id($user_name = NULL)
+    {
+        return run_restricted_task(GROUP_AVALON, function ($u) {
+            inject_if_not_in($this->body, KNIGHT_FIELD_NAME, $u);
+            $query = sprintf(
+                "SELECT %s FROM %s WHERE %s = '%s'",
+                KNIGHT_FIELD_ID,
+                $this->table_name,
+                KNIGHT_FIELD_NAME,
+                $u
+            );
+            return $this->connector->select($query, $this->parser);
+        }, $user_name);
+    }
+    /**
+     * This function adds a user to a group by its id
+     *
+     * @param int $user_id The user id
+     * @param string $group_name The name of the group
+     * @return string The server response
+     */
+    public function join_group($user_id = NULL, $group_name = NULL)
+    {
+        return run_restricted_task(GROUP_AVALON, function ($u_id, $g_name) {
+            $service = new KnightGroupService(NULL);
+            try {
+                $g_id = $service->GetGroupId($g_name);
+                $this->table_name = KNIGHT_RANK_TABLE;
+                inject_if_not_in($this->body, KNIGHT_FIELD_ID, $u_id);
+                inject_if_not_in($this->body, KNIGHT_GRP_FIELD_ID, $g_id);
+                $this->POST->table_insert_fields = array(KNIGHT_FIELD_ID, KNIGHT_GRP_FIELD_ID);
+                $service->close();
+                return $this->POST->insert();
+            } catch (Exception $e) {
+                $service->close();
+                return error_response($e->getMessage());
+            }
+        }, $user_id, $group_name);
     }
 }
 ?>

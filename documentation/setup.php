@@ -11,7 +11,6 @@ include_once "/../avalon/services/KnightGroupService.php";
 include_once "ElainUtils.php";
 include_once "AppData.php";
 
-
 //Inicia Sesión con credenciales falsas
 $m = new MorganaSession(USER_GOD, array(GROUP_NAMELESS));
 $m->login();
@@ -198,15 +197,25 @@ class Elaine
     {
         $url_params = new HasamiURLParameters(array(
             KEY_SERVICE => SERVICE_KNIGHT,
-            KEY_TASK => TASK_SELECT,
+            KEY_TASK => TASK_SELECT
+        ));
+        $body = array(
+            KNIGHT_FIELD_ID => -1,
             KNIGHT_FIELD_NAME => USER_ROOT_NAME,
             KNIGHT_GRP_FIELD_NAME => GROUP_NAMELESS
-        ));
+        );
         //Seleccionamos el id del usuario
         $k_service = new KnightService($url_params);
+        $k_service->body = (object)$body;
         $k_service->method = 'POST';
-        $user_response = $k_service->get_response();
-        //
+        $user_response = json_decode($k_service->get_response());
+        if (has_result($user_response)) {
+            $body->{KNIGHT_FIELD_ID} = intval($user_response->{NODE_RESULT}[0]->{KNIGHT_FIELD_ID});
+            $response = $k_service->join_group();
+            return json_decode($response);
+        }
+        else
+            return service_response(array(KNIGHT_FIELD_NAME => USER_ROOT_NAME, KNIGHT_GRP_FIELD_NAME => GROUP_NAMELESS, NODE_STATUS => STATUS_ERROR), $user_response->{NODE_QUERY_RESULT}, $user_response->{NODE_ERROR}, FALSE);
     }
 }
 ?>

@@ -32,5 +32,28 @@ class KnightGroupService extends HasamiWrapper
             });
         };
     }
+    /**
+     * Gets the group id from a group name
+     *
+     * @param string $group_name The group name
+     * @throws Exception An Exception is thrown if the group name is not defined
+     * @return int The group id
+     */
+    function GetGroupId($group_name)
+    {
+        $query = sprintf(
+            "SELECT %s FROM %s WHERE %s = '%s'",
+            KNIGHT_GRP_FIELD_ID,
+            $this->table_name,
+            KNIGHT_GRP_FIELD_NAME,
+            $group_name
+        );
+        $id = $this->connector->select_one($query);
+        if (is_null($id))
+            throw new Exception(ERR_UNKNOWN_GROUP);
+        else
+            return intval($id);
+    }
+
 }
 ?>

@@ -64,6 +64,16 @@ const KNIGHT_RANK_TABLE = 'knights_ranking';
  */
 const ERR_TASK_UNDEFINED = "The given task was not found on the service";
 /**
+ * @var string ERR_UNKNOWN_GROUP
+ * The error message sent when the group does not exists.
+ */
+const ERR_UNKNOWN_GROUP = "The group '%s' doesn't exists on the database.";
+/**
+ * @var string ERR_ACCESS_DENIED
+ * The error message sent when access is restricted to the service.
+ */
+const ERR_ACCESS_DENIED = "Access denied";
+/**
  * @var string ERR_ACCESS_DENIED
  * The error message sent when access is restricted to the service.
  */

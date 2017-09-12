@@ -211,9 +211,9 @@ function selection_by_field($GET, $field_name)
  * Injects a property into an object when the property does not exist
  * and has a not null property value.
  *
- * @param [type] $object The object to insert the property
- * @param [type] $property_name The name of the property
- * @param [type] $property_value The property value
+ * @param stdClass $object The object to insert the property
+ * @param string $property_name The name of the property
+ * @param mixed $property_value The property value
  * @return void
  */
 function inject_if_not_in(&$object, $property_name, $property_value)
