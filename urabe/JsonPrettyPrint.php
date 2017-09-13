@@ -61,10 +61,10 @@ class JsonPrettyPrint
         $html .= $this->new_line();
         //Contenido del JSON
         foreach ($json as $key => $value) {
-            $html .= $tab_symbol . $this->print_property($key) . $this->print_symbol(":");
+            $html .= $tab_symbol . $this->print_property($key) . $this->print_symbol(" : ");
             if (is_array($value)) {
                 if (count($value) > 0)
-                    $html .= $this->print_symbol("[") . $this->new_line();
+                    $html .=  $this->new_line().$this->print_symbol("[") .$this->new_line();
                 else
                     $html .= $this->print_symbol("[");
                 $tab_times++;

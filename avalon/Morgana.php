@@ -1,5 +1,6 @@
 <?php
 include_once "/../urabe/Warai.php";
+include_once "Chivalry.php";
 /**
  * Morgana Session and Access Management
  * @version 1.0.0
@@ -83,6 +84,23 @@ function get_group_names()
     return $group_by_names;
 }
 /**
+ * Gets the groups by the server response obtained from
+ * Knight Group Service Class
+ *
+ * @param string $response The server response
+ * @return string[] The groups found on the server
+ */
+function get_groups_by_service($response)
+{
+    $groups = json_decode($response);
+    $result = array();
+    if (has_result($groups)) {
+        foreach ($groups->result as &$group) 
+            $result[$group->{KNIGHT_GRP_FIELD_NAME}] = $group->{KNIGHT_GRP_FIELD_ID};
+    }
+    return $result;
+}
+/**
  * Check if an user has access to a group by name
  *
  * @param string $group_name The name of the group
@@ -119,7 +137,7 @@ function run_restricted_task($group_name, $task, $params = NULL)
             $input_param = func_get_arg($i);
             array_push($input, $input_param);
         }
-        return  call_user_func_array($task, $input);
+        return call_user_func_array($task, $input);
     }
     else {
         http_response_code(403);

@@ -48,4 +48,23 @@ function response_table_creation($table_name, $status, $query_result = TRUE, $er
 {
     return service_response(array(NODE_TABLE => $table_name, NODE_STATUS => $status), $query_result, $error);
 }
+/**
+ * The server response used when a group is created or checked
+ *
+ * @param string $group_name The group name
+ * @param int $group_id The group id
+ * @param string $status The task status
+ * @param boolean $json_decoded if true the response is obtained decoded as an object
+ * @param boolean $query_result The transaction query result
+ * @param string $error The transaction error
+ * @return string|stdclass The server response
+ */
+function response_group_creation($group_name, $group_id, $status, $json_decoded = FALSE, $query_result = TRUE, $error = "")
+{
+    $response = service_response(array(NODE_TABLE => $group_name, NODE_STATUS => $status, NODE_KEY => $group_id), $query_result, $error);
+    if ($json_decoded)
+        return json_decode($response);
+    else
+        return $response;
+}
 ?>

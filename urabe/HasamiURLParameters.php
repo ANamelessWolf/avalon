@@ -19,6 +19,7 @@ class HasamiURLParameters
      * __construct
      *
      * Initialize a new instance of the Hasami URL parameters.
+     * @param string $input_params The input parameters
      */
     function __construct($input_params = NULL)
     {

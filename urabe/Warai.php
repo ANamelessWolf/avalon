@@ -121,6 +121,11 @@ const NODE_QUERY_RESULT = 'query_result';
  * The node name that saves the transaction error
  */
 const NODE_ERROR = 'error';
+/**
+ * @var string NODE_KEY
+ * The node name that saves an element key
+ */
+const NODE_KEY = 'key';
 /****************************************
 ************ URL PARAMS KEYS ************
 *****************************************/

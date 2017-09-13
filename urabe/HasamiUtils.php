@@ -115,10 +115,11 @@ function remove_from_array($array, $items)
 {
     $new_array = array();
     $num_args = func_num_args();
-    $flag = TRUE;
-    for ($i = 1; $flag && $i < $num_args; $i++) {
-        $item = func_get_arg($i);
-        if (!in_array($item, $array))
+    $ignore_items = array();
+    for ($i = 1; $i < $num_args; $i++)
+        array_push($ignore_items, func_get_arg($i));
+    foreach ($array as &$item) {
+        if (!in_array($item, $ignore_items))
             array_push($new_array, $item);
     }
     return $new_array;

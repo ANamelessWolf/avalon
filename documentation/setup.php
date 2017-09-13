@@ -8,6 +8,7 @@ include_once "/../avalon/Excalibur.php";
 include_once "/../avalon/Morgana.php";
 include_once "/../avalon/services/KnightService.php";
 include_once "/../avalon/services/KnightGroupService.php";
+include_once "/../avalon/services/KnightServiceRanking.php";
 include_once "ElainUtils.php";
 include_once "AppData.php";
 
@@ -35,6 +36,10 @@ class Elaine
      */
     public $connector;
     /**
+     * @var int The id of the administration group
+     */
+    private $admin_grp_id;
+    /**
      * __construct
      *
      * Initialize a new instance of Avalon instaler
@@ -44,20 +49,33 @@ class Elaine
     {
         $this->connector = new Urabe($connection_id);
     }
+    /**
+     * Install the aplication 
+     *
+     * @return The server response
+     */
     public function install()
     {
         //1: Crear las tablas
         $table_result = $this->install_tables();
-        //2: Se imprimen los resultados
+        //2: Se crean los grupos de la aplicación
+        $app_group_result = $this->install_groups();
+        //3: Se crea el usuario default
+        $dftl_user_result = $this->install_root();
+        //: Se imprimen los resultados
         $response = array(
-            NODE_SETUP_TABLE => $table_result
+            NODE_SETUP_DB => array(
+                NODE_SETUP_TABLE => $table_result,
+                NODE_SETUP_GROUPS => $app_group_result
+            ),
+            NODE_DFTL_USER => $dftl_user_result
         );
         return json_encode($response);
     }
     /**
      * Create the application tables
      *
-     * @return string The server response
+     * @return mixed[] The server responses
      */
     public function install_tables()
     {
@@ -74,25 +92,112 @@ class Elaine
             $result->{NODE_TASK} = TASK_CREATE_TABLE;
             $status = $result->{NODE_RESULT}->{NODE_STATUS};
             array_push($table_result, $result);
-            //Se añade el usuario root si la tabla se acaba de crear
-            if ($table == TABLE_KNIGHT && $status == STATUS_TABLE_CREATED)
-                array_push($table_result, $this->create_root());
-            else if ($table == TABLE_KNIGHT_GRP && $status == STATUS_TABLE_CREATED)
-                array_push($table_result, $this->create_groups());
-            else if ($table == TABLE_KNIGHT_GRP && $status == STATUS_INSTALLED)
-                array_push($table_result, $this->update_groups());
-            else if ($table == TABLE_KNIGHT_RANK && $status == STATUS_TABLE_CREATED)
-                array_push($table_result, $this->register_root());
         }
         return $table_result;
     }
+    /**
+     * Creates the application groups
+     *
+     * @return mixed[] The server responses
+     */
+    public function install_groups()
+    {
+        $response = array();
+        $service = new KnightGroupService(NULL);
+        //1: Se realizá la selección de los grupos instalados
+        $installed_groups = $service->get_response();
+        $installed_groups = get_groups_by_service($installed_groups);
+        //2: Se realizá la selección de los grupos a instalar
+        $app_groups = get_group_names();
+        //3: Se insertan los grupos que no esten instalados
+        $service->method = "POST";
+        foreach ($app_groups as $grp_name => $value) {
+            if (array_key_exists($grp_name, $installed_groups)) {
+                array_push($response, response_group_creation($grp_name, $installed_groups[$grp_name], STATUS_INSTALLED, TRUE));
+                if ($grp_name == GROUP_NAMELESS)
+                    $this->admin_grp_id = $installed_groups[$grp_name];
+            }
+            else {
+                $service->body = json_decode("{}");
+                $service->body->{KNIGHT_GRP_FIELD_NAME} = $grp_name;
+                $r = $service->get_response();
+                $r = json_decode($r);
+                if (has_result($r)) {
+                    array_push($response, response_group_creation($grp_name, $r->result[0]->{KNIGHT_GRP_FIELD_ID}, STATUS_CREATED, TRUE));
+                    if ($grp_name == GROUP_NAMELESS)
+                        $this->admin_grp_id = $r->result[0]->{KNIGHT_GRP_FIELD_ID};
+                }
+                else
+                    array_push($response, response_group_creation($grp_name, NAN, STATUS_ERROR, TRUE, $r->{NODE_QUERY_RESULT}, $r->{NODE_ERROR}));
+            }
+
+        }
+        return $response;
+    }
+    /**
+     * Installs the root user
+     *
+     * @return string The server response
+     */
+    public function install_root()
+    {
+        $result = (object)array(KNIGHT_FIELD_NAME => USER_ROOT_NAME, NODE_STATUS => "");
+        $k_service = new KnightService();
+        $g_service = new KnightGroupService();
+        $r_service = new KnightServiceRanking();
+        //1: Checamos si existe root en la tabla
+        $k_service->method = "POST";
+        $k_service->url_parameters = new HasamiURLParameters(array(KEY_TASK => TASK_SELECT));
+        $k_service->body = (object)array(KNIGHT_FIELD_NAME => USER_ROOT_NAME);
+        $response = json_decode($k_service->get_response());
+        //2: Se valída el vinculo al grupo de administrador
+        if (has_result($response)) { //Existe el usuario
+            $u_id = $response->{NODE_RESULT}[0]->{KNIGHT_FIELD_ID};
+            //Revisar que exista en el grupo de administrador
+            if ($g_service->belongs_to_group($u_id, $this->admin_grp_id))
+                $result->{NODE_STATUS} = STATUS_INSTALLED;
+            else {
+                //Si no existe se crea el link
+                $response = $r_service->create_link($u_id, $this->admin_grp_id);
+                $response = json_decode($response);
+                if ($response->{NODE_QUERY_RESULT})
+                    $result->{NODE_STATUS} = STATUS_LINKED;
+                else
+                    $result->{NODE_ERROR} = STATUS_ERROR;
+            }
+            $response->{NODE_RESULT} = $result;
+        }
+        else {
+            //Se crea el usuario root y el link al grupo
+            $response = $k_service->join_the_realm(USER_ROOT_NAME, USER_ROOT_PASS);
+            $response = json_decode($response);
+            if (has_result($response)) {
+                $u_id = $response->{NODE_RESULT}[0]->{KNIGHT_FIELD_ID};
+                $response = $r_service->create_link($u_id, $this->admin_grp_id);
+                $response = json_decode($response);
+                if ($response->{NODE_QUERY_RESULT})
+                    $result->{NODE_STATUS} = STATUS_CREATED;
+                else
+                    $result->{NODE_ERROR} = STATUS_ERROR;
+            }
+            else
+                $result->{NODE_ERROR} = STATUS_ERROR;
+            $response->{NODE_RESULT} = $result;
+        }
+        $r_service->close();
+        $g_service->close();
+        $k_service->close();
+        return $response;
+    }
+
+
     /**
      * Creates a table from a script file
      *
      * @param string $sql_file The sql file path
      * @return string The server response
      */
-    public function create_table($sql_file, $table_name)
+    private function create_table($sql_file, $table_name)
     {
         try {
             if ($this->connector->table_exists($table_name))
@@ -111,6 +216,7 @@ class Elaine
         }
         return $response;
     }
+
     /**
      * Creates the default roor user on the database
      *
@@ -126,36 +232,7 @@ class Elaine
         $service->close();
         return $service_result;
     }
-    /**
-     * Inserts the list of groups defined on the application
-     *
-     * @param mixed[] $grp_names The collection of groups to create
-     * @param KnightGroupService $active_service The web service
-     * @return mixed[] The server response as an array
-     */
-    public function create_groups($grp_names = NULL, $active_service = NULL)
-    {
-        $response = array();
-        if (is_null($grp_names))
-            $grps = get_group_names();
-        else
-            $grps = $grp_names;
-        if (is_null($active_service))
-            $service = new KnightGroupService(NULL);
-        else
-            $service = $active_service;
-        $service->method = "POST";
-        foreach ($grps as $grp_name => $value) {
-            $service->body = json_decode("{}");
-            $service->body->{KNIGHT_GRP_FIELD_NAME} = $grp_name;
-            $service_result = $service->get_response();
-            $service_result = json_decode($service_result);
-            $service_result->{NODE_TASK} = TASK_CREATE_GROUP;
-            array_push($response, $service_result);
-        }
-        $service->close();
-        return $response;
-    }
+
     /**
      * Agregá los grupos que sean nuevos en la aplicación y no esten definidos en la base de datos
      *

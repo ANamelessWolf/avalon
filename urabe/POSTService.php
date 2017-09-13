@@ -21,6 +21,10 @@ class POSTService extends HasamiRESTfulService
      */
     public $order_result_field_name;
     /**
+     * @var string If set its the query used on the selection result, after inserting a row
+     */
+    public $result_query;
+    /**
      * __construct
      *
      * Initialize a new instance of the POST Service class.
@@ -148,7 +152,10 @@ class POSTService extends HasamiRESTfulService
     {
         $json_result = json_decode($query_result);
         if ($json_result->{NODE_QUERY_RESULT}) {
-            $query = sprintf("SELECT * FROM `%s` ORDER BY @rowid DESC LIMIT %d", $this->web_service->table_name, $limit_total);
+            if (is_null($this->result_query))
+                $query = sprintf("SELECT * FROM `%s` ORDER BY %s DESC LIMIT %d", $this->web_service->table_name, $this->web_service->primary_key_name, $limit_total);
+            else
+                $query = $this->result_query;
             $result = $this->web_service->connector->select($query, $this->web_service->parser);
             $json_result->{NODE_RESULT} = json_decode($result)->{NODE_RESULT};
             return json_encode($json_result);

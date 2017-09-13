@@ -53,23 +53,48 @@ const NODE_STATUS = 'status';
  */
 const NODE_TASK = 'Task';
 /**
+ * @var string NODE_SETUP_DB
+ * The node name that saves the database installation status
+ */
+const NODE_SETUP_DB = 'Database';
+/**
+ * @var string NODE_DFTL_USER
+ * The node name that saves the default user installation status
+ */
+const NODE_DFTL_USER ="root";
+/**
  * @var string NODE_SETUP_TABLE
  * The node name that saves the table name
  */
-const NODE_SETUP_TABLE = 'Database';
+const NODE_SETUP_TABLE = 'Tables';
+/**
+ * @var string NODE_SETUP_GROUPS
+ * The node name that saves the application groups
+ */
+const NODE_SETUP_GROUPS = 'Groups';
 /***************************************
  *************** Setup status **********
  ***************************************/
+ /**
+ * @var string STATUS_LINKED
+ * The status sended when a link is created between two objects
+ */
+const STATUS_LINKED = 'Linked';
 /**
  * @var string STATUS_INSTALLED
  * The status sended when a table is already installed
  */
 const STATUS_INSTALLED = 'Already Installed';
 /**
- * @var string STATUS_INSTALLED
+ * @var string STATUS_TABLE_CREATED
  * The status sended when a table is created
  */
 const STATUS_TABLE_CREATED = 'Table created';
+/**
+ * @var string STATUS_CREATED
+ * The status sended when an element is created
+ */
+const STATUS_CREATED = 'Created';
 /**
  * @var string STATUS_ERROR
  * The status sended when an error is found

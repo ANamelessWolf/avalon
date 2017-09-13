@@ -8,8 +8,13 @@
  * @copyright 2015-2020 Nameless Studios
  */
 /****************************************
- **************** Key names *************
- ***************************************/
+************ Available Tasks*************
+*****************************************/
+/**
+* @var string TASK_IS_IN_GROUP
+* The task name to check if a user belongs to a group
+*/
+const TASK_IS_IN_GROUP = 'is_in_group';
 
 /****************************************
  **************** Database ***************
@@ -55,6 +60,11 @@ const KNIGHT_GRP_FIELD_NAME = 'group_name';
  * (knight-group relation)
  */
 const KNIGHT_RANK_TABLE = 'knights_ranking';
+/**
+ * @var string KNIGHT_RANK_FIELD_ID
+ * The name of the table field for the rank id
+ */
+const KNIGHT_RANK_FIELD_ID = 'rank_id';
 /***************************************
  **************** Errors ***************
  ***************************************/
@@ -68,11 +78,6 @@ const ERR_TASK_UNDEFINED = "The given task was not found on the service";
  * The error message sent when the group does not exists.
  */
 const ERR_UNKNOWN_GROUP = "The group '%s' doesn't exists on the database.";
-/**
- * @var string ERR_ACCESS_DENIED
- * The error message sent when access is restricted to the service.
- */
-const ERR_ACCESS_DENIED = "Access denied";
 /**
  * @var string ERR_ACCESS_DENIED
  * The error message sent when access is restricted to the service.

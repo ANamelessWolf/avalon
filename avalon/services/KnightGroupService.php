@@ -32,6 +32,7 @@ class KnightGroupService extends HasamiWrapper
             });
         };
     }
+
     /**
      * Gets the group id from a group name
      *
@@ -39,7 +40,7 @@ class KnightGroupService extends HasamiWrapper
      * @throws Exception An Exception is thrown if the group name is not defined
      * @return int The group id
      */
-    function GetGroupId($group_name)
+    public function GetGroupId($group_name)
     {
         $query = sprintf(
             "SELECT %s FROM %s WHERE %s = '%s'",
@@ -53,6 +54,21 @@ class KnightGroupService extends HasamiWrapper
             throw new Exception(ERR_UNKNOWN_GROUP);
         else
             return intval($id);
+    }
+
+    /**
+     * Checks if a user belongs to a group
+     *
+     * @param int $user_id The user id
+     * @param int $group_id The group id
+     * @return bool True if the user belongs to a group
+     */
+    public function belongs_to_group($user_id, $group_id)
+    {
+        $query = "SELECT COUNT(`%s`) FROM `%s` WHERE `%s`=%d AND `%s`=%d";
+        $query = sprintf($query, KNIGHT_RANK_FIELD_ID, KNIGHT_RANK_TABLE, KNIGHT_FIELD_ID, $user_id, KNIGHT_GRP_FIELD_ID, $group_id);
+        $result = $this->connector->select_one($query);
+        return boolval($result);
     }
 
 }

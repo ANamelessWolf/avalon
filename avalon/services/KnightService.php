@@ -6,6 +6,7 @@ include_once "/../Chivalry.php";
 include_once "/../Excalibur.php";
 include_once "/../Morgana.php";
 include_once "KnightGroupService.php";
+include_once "KnightServiceRanking.php";
 /**
  * The Knight Service is in charge to administrate the users that are used on the Avalon database
  * A web service to administrate the Knight service table
@@ -80,7 +81,7 @@ class KnightService extends HasamiWrapper
             $result = $this->POST->insert();
             $result = json_decode($result);
             //Ocultamos el password
-            unset($result[0]->{KNIGHT_FIELD_PASS});
+            unset($result->{NODE_RESULT}[0]->{KNIGHT_FIELD_PASS});
             return json_encode($result);
         }, $user_name, $password);
     }
@@ -94,12 +95,13 @@ class KnightService extends HasamiWrapper
     {
         return run_restricted_task(GROUP_AVALON, function ($u) {
             inject_if_not_in($this->body, KNIGHT_FIELD_NAME, $u);
+            $query = "SELECT %s FROM %s WHERE %s = '%s'";
             $query = sprintf(
-                "SELECT %s FROM %s WHERE %s = '%s'",
+                $query,
                 KNIGHT_FIELD_ID,
                 $this->table_name,
                 KNIGHT_FIELD_NAME,
-                $u
+                $this->body->{KNIGHT_FIELD_NAME}
             );
             return $this->connector->select($query, $this->parser);
         }, $user_name);
@@ -114,19 +116,20 @@ class KnightService extends HasamiWrapper
     public function join_group($user_id = NULL, $group_name = NULL)
     {
         return run_restricted_task(GROUP_AVALON, function ($u_id, $g_name) {
-            $service = new KnightGroupService(NULL);
+            $g_service = new KnightGroupService(NULL);
             try {
-                $g_id = $service->GetGroupId($g_name);
-                $this->table_name = KNIGHT_RANK_TABLE;
+                inject_if_not_in($this->body, KNIGHT_GRP_FIELD_NAME, $group_name);
                 inject_if_not_in($this->body, KNIGHT_FIELD_ID, $u_id);
-                inject_if_not_in($this->body, KNIGHT_GRP_FIELD_ID, $g_id);
-                $this->POST->table_insert_fields = array(KNIGHT_FIELD_ID, KNIGHT_GRP_FIELD_ID);
-                $service->close();
-                return $this->POST->insert();
+                //Se obtiene el id del grupo para crear el link
+                $g_name = $this->body->{KNIGHT_GRP_FIELD_NAME};
+                $g_id = $g_service->GetGroupId($g_name);
+                $r_service = new KnightServiceRanking();
+                $response = $r_service->create_link($this->body->{KNIGHT_FIELD_ID}, $g_id);
+                $r_service->close();
             } catch (Exception $e) {
-                $service->close();
-                return error_response($e->getMessage());
+                $response = error_response($e->getMessage());
             }
+            $g_service->close();
         }, $user_id, $group_name);
     }
 }
