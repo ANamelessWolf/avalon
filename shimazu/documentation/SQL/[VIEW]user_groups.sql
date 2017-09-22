@@ -1,7 +1,9 @@
 USE `cdmx_obras`;
 CREATE  OR REPLACE VIEW `user_groups` AS
 (SELECT 
+    `knights`.`knight_id`,
     `knights`.`user_name`, 
+    `usuarios`.`clv_usuario`, 
     `usuarios`.`nombre`, 
     `knights_groups`.`group_name` 
 FROM 

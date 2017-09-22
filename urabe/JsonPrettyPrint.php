@@ -64,12 +64,23 @@ class JsonPrettyPrint
             $html .= $tab_symbol . $this->print_property($key) . $this->print_symbol(" : ");
             if (is_array($value)) {
                 if (count($value) > 0)
-                    $html .=  $this->new_line().$this->print_symbol("[") .$this->new_line();
+                    $html .= $this->new_line() . $this->print_symbol("[") . $this->new_line();
                 else
                     $html .= $this->print_symbol("[");
                 $tab_times++;
                 foreach ($value as &$arr_value) {
-                    $html .= $this->get_format($arr_value, $tab_times, TRUE);
+                    if (is_object($arr_value) || is_array($arr_value))
+                        $html .= $this->get_format($arr_value, $tab_times, TRUE);
+                    else {
+                        if (is_object($arr_value))
+                            $html .= $this->get_format($arr_value, $tab_times++);
+                        else if (is_numeric($arr_value))
+                            $html .= $this->print_number_value($arr_value);
+                        else if (is_bool($arr_value))
+                            $html .= $this->print_bool_value($arr_value);
+                        else
+                            $html .= $this->print_text_value($arr_value);
+                    }
                     $html .= $coma . $this->new_line();
                 }
                 if (count($value) > 0) {

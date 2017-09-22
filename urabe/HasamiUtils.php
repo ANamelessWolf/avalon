@@ -209,6 +209,18 @@ function selection_by_field($GET, $field_name)
     return new Selection($GET, $query, $field_name);
 }
 /**
+ * Creates a selection query that select all fields that matchs an equal comparative condition
+ * @param string $table_name The table name
+ * @param string $field_name The field name
+ * @param string $value The value to match
+ * @return string The selection query
+ */
+function query_select_by_field($table_name, $field_name, $value)
+{
+    $query = "SELECT * FROM " . $table_name . " WHERE " . $field_name . " = " . $value;
+    return $query;
+}
+/**
  * Injects a property into an object when the property does not exist
  * and has a not null property value.
  *

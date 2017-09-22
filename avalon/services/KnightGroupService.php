@@ -4,7 +4,7 @@ include_once "/../../urabe/Warai.php";
 include_once "/../../alice/Caterpillar.php";
 include_once "/../Chivalry.php";
 include_once "/../Excalibur.php";
-include_once "/../Morgana.php";
+include_once "/../MorganaUtils.php";
 /**
  * The Knight Group Service is in charge to administrate the users groups that are used on the Avalon database
  * A web service to administrate the knights_groups table

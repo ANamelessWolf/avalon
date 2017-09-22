@@ -4,7 +4,7 @@ include_once "/../../urabe/Warai.php";
 include_once "/../../alice/Caterpillar.php";
 include_once "/../Chivalry.php";
 include_once "/../Excalibur.php";
-include_once "/../Morgana.php";
+include_once "/../MorganaUtils.php";
 include_once "KnightGroupService.php";
 include_once "KnightServiceRanking.php";
 /**
@@ -21,20 +21,23 @@ class KnightService extends HasamiWrapper
      * __construct
      *
      * Initialize a new instance of the Knight Service
-     * @param string $url_params The url parameters
+     * @param HasamiURLParameters $url_params The url parameters
+     * @param KanojoX $db_id The connection object
      */
-    function __construct($url_params = NULL)
+    function __construct($url_params = NULL, $db_id = NULL)
     {
-        parent::__construct(KNIGHT_TABLE, KNIGHT_FIELD_ID, new Excalibur());
+        if (is_null($db_id))
+            $db_id = new Excalibur();
+        parent::__construct(KNIGHT_TABLE, KNIGHT_FIELD_ID, $db_id);
         $this->url_parameters = $url_params;
         $this->POST->service_task = function ($sender) {
             return $this->POST_action();
         };
     }
     /**
-     * Define la acción de POST del servicio Knight
+     * Defines the post action of the service
      *
-     * @return string La respuesta del servidor
+     * @return string The service response
      */
     public function POST_action()
     {
@@ -131,6 +134,21 @@ class KnightService extends HasamiWrapper
             }
             $g_service->close();
         }, $user_id, $group_name);
+    }
+    /**
+     * Login to the server using a user name and a password
+     * @param string $user_name The user name
+     * @param string $password The user password
+     * @return stdClass La respuesta del servidor
+     */
+    public function login($user_name, $password)
+    {
+        $query = "SELECT `%s` FROM `%s` WHERE `%s`= '%s' AND `%s`= '%s'";
+        $cat = new Caterpillar();
+        $password = $cat->encrypt($password);
+        $query = sprintf($query, KNIGHT_FIELD_ID, KNIGHT_TABLE, KNIGHT_FIELD_NAME, $user_name, KNIGHT_FIELD_PASS, $password);
+        $response = $this->connector->select($query);
+        return json_decode($response);
     }
 }
 ?>

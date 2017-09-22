@@ -176,6 +176,11 @@ const SERVICE_KNIGHT_GROUP = 'Groups';
 */
 const TASK_ADD = 'Add';
 /**
+* @var string TASK_LOGIN
+* The task name that creates a login on the databse
+*/
+const TASK_LOGIN = 'Login';
+/**
 * @var string TASK_LINK
 * The task name to link an element to another
 */
