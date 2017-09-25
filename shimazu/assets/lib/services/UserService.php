@@ -163,7 +163,7 @@ class UserService extends HasamiWrapper
                 http_response_code(401);
                 throw new Exception(ERR_ACCESS_DENIED);
             }
-           $response = $this->connector->select($query,$this->parser);
+            $response = $this->connector->select($query, $this->get_user_group_parser());
 
         } catch (Exception $e) {
             $response = error_response($e->getMessage());
@@ -178,7 +178,7 @@ class UserService extends HasamiWrapper
     public function get_user_data($knight_id)
     {
         $query = query_select_by_field(USER_GROUP_TABLE, KNIGHT_FIELD_ID, $knight_id);
-        $response = $this->connector->select($query);
+        $response = $this->connector->select($query, $this->get_user_group_parser());
         $response = json_decode($response);
         if (has_result($response)) {
             $session_data = array(
@@ -200,6 +200,15 @@ class UserService extends HasamiWrapper
         else
             return error_response(ERR_BAD_LOGIN);
     }
-
+    /**
+     * Obtiene el parser que utiliza la tabla de grupo de usuarios
+     *
+     * @return El parser de la tabla grupo de usuarios
+     */
+    public function get_user_group_parser()
+    {
+        $u_g = new HasamiWrapper(USER_GROUP_TABLE, KNIGHT_FIELD_ID, new CDMXId());
+        return $u_g->parser;
+    }
 }
 ?>
