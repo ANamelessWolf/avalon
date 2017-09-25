@@ -72,6 +72,24 @@ function start_session()
         session_start();
 }
 /**
+ * Close the application session
+ * @param string[] The session field names
+ * @return void
+ */
+function end_session($session_fields)
+{
+    start_session();
+   //Always check this fields
+    $special_fields = array(USR_ACCESS_SESSION, GRP_SESSION, USER_SESSION);
+    foreach ($special_fields as &$field)
+        if (!in_array($field, $session_fields))
+        array_push($session_fields, $field);
+    $count = count($session_fields);
+    for ($i = 0; $i < $count; $i++)
+        $_SESSION[$session_fields[$i]] = NULL;
+    session_destroy();
+}
+/**
  * Checks the current session status
  *
  * @param string[] The session field names
