@@ -63,7 +63,7 @@ const GROUP_RECYCLE_BIN = "recycle_bin";
  * @var string TASK_LOGIN
  * El nombre del grupo papelera de reciclaje
  */
-const CDMX_TASK_CHECK = "Checar";
+const CDMX_TASK_CHECK = "Check";
 /****************************************
 ************** Errores*******************
 *****************************************/

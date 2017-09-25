@@ -6,6 +6,7 @@ include_once "/../../../../urabe/HasamiUtils.php";
 include_once "/../../../../urabe/Warai.php";
 //Avalon
 include_once "/../../../../avalon/services/KnightService.php";
+include_once "/../../../../avalon/MorganaUtils.php";
 //CDMX
 include_once "/../AppConst.php";
 include_once "/../AppAccess.php";
@@ -111,8 +112,8 @@ class UserService extends HasamiWrapper
      */
     public function check()
     {
-        $session = new AppSession($u_data);
-        $session->check();
+        start_session();
+        var_dump($_SESSION);
     }
 
     /**
