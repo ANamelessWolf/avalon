@@ -35,6 +35,7 @@ class UserService extends HasamiWrapper
     {
         $db_id = new CDMXId();
         parent::__construct(USER_TABLE, USER_FIELD_ID, $db_id);
+        $this->enable_GET = FALSE;
         $this->url_parameters = $url_params;
         $this->k_service = new KnightService($url_params, $db_id);
         $this->POST->service_task = function ($sender) {
