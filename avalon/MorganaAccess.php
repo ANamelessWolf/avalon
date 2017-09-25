@@ -82,7 +82,7 @@ class MorganaAccess
             $grps = $_SESSION[USR_ACCESS_SESSION];
             return in_array($group_name, $this->groups);
         }
-        //Now check group access
+        //Se verifica el nivel de grupos
         else if (isset($_SESSION[GRP_SESSION])) {
             return in_array($_SESSION[GRP_SESSION], $group_name);
         }
