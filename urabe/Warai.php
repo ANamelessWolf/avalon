@@ -85,6 +85,11 @@ const ERR_NULL_BODY = 'An error occurred reading the message body, the body does
  */
 const ERR_INVALID_SERVICE = 'No service especified';
 /**
+ * @var string ERR_INVALID_SERVICE
+ * The error message sent when no service name is specified.
+ */
+const ERR_SERVICE_RESTRICTED = 'This service can not be access via the verbose %s';
+/**
  * @var string ERR_TASK_UNDEFINED
  * The error message sent when the task is missing or not Defined.
  */

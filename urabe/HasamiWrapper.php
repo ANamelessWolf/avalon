@@ -131,32 +131,53 @@ class HasamiWrapper
     public function get_response($pretty_print = FALSE, $dark_theme = TRUE, $security = FALSE)
     {
         $result = "";
-        try {
-            switch ($this->method) {
-                case 'GET' :
-                    if (is_string($this->GET->service_task))
-                        $result = $this->{$this->GET->service_task}($this);
-                    else
-                        $result = call_user_func_array($this->GET->service_task, array($this));
-                    break;
-                case 'PUT' :
-                    $result = call_user_func_array($this->PUT->service_task, array($this));
-                    break;
-                case 'POST' :
-                    $result = call_user_func_array($this->POST->service_task, array($this));
-                    break;
-                case 'DELETE' :
-                    $result = call_user_func_array($this->DELETE->service_task, array($this));
-                    break;
-            }
-        } catch (Exception $e) {
-            $result = error_response($e->getMessage());
+        switch ($this->method) {
+            case 'GET' :
+                $result = get_server_response($this->GET, $this->enable_GET);
+                break;
+            case 'PUT' :
+                $result = get_server_response($this->PUT, $this->enable_PUT);
+                break;
+            case 'POST' :
+                $result = get_server_response($this->POST, $this->enable_POST);
+                break;
+            case 'DELETE' :
+                $result = get_server_response($this->DELETE, $this->enable_DELETE);
+                break;
         }
         if ($pretty_print)
             return pretty_print_format(json_decode($result), null, $dark_theme);
         else
             return $result;
     }
+    /**
+     * Get a server response via a web service query
+     *
+     * @param HasamiRESTfulService $service The restful service
+     * @param bool $is_enabled Check if the service is disabled.
+     * @throws Exception An exception is thrown when an error is found on the petition or
+     * when the access to the webservice is restricted.
+     * @return string The server response
+     */
+    private function get_server_response($service, $is_enabled)
+    {
+        try {
+            //Web service is disabled
+            if (!$is_enabled) {
+                http_response_code(403);
+                throw new Exception(sprintf(ERR_SERVICE_RESTRICTED, $this->method));
+            }
+            //Web service work around
+            if (is_string($service->service_task))
+                $result = $this->{$service->service_task}($this);
+            else
+                $result = call_user_func_array($service->service_task, array($this));
+        } catch (Exception $e) {
+            $result = error_response($e->getMessage());
+        }
+        return $result;
+    }
+
     /**
      * Close the connection to MySQL
      * @return void

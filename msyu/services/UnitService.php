@@ -1,6 +1,5 @@
 <?php
 include_once "/../../urabe/HasamiWrapper.php";
-include_once "/../../urabe/Warai.php";
 include_once "/../../avalon/Excalibur.php";
 include_once "/../Mashu.php";
 /**
