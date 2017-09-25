@@ -24,7 +24,7 @@ class MorganaAccess
             $this->groups == array(
                 GROUP_AVALON => CAMELOT_KEY,
                 GROUP_CHRONO => CHRONO_KEY,
-                GROUP_NAMELESS => ADMIN_KEY
+                GROUP_NAMELESS => THE_NAMELESS_KEY
             );
         }
         else
@@ -82,7 +82,7 @@ class MorganaAccess
             $grps = $_SESSION[USR_ACCESS_SESSION];
             return in_array($this->groups[$group_name], $grps);
         }
-        //Now check group access
+        //Se verifica el nivel de grupos
         else if (isset($_SESSION[GRP_SESSION])) {
             return in_array($_SESSION[GRP_SESSION], $group_name);
         }

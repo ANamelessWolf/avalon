@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Defines constants and messages relative to the Urabe API.
  * @version 1.0.0
@@ -9,12 +10,12 @@
 /***************************************
  **************** Errors ***************
  ***************************************/
- /**
+/**
  * @var string ERR_BAD_INDEX
  * The error message sent when the index is out of bounds.
  */
 const ERR_BAD_INDEX = 'Bad index, no such index %s in array.';
- /**
+/**
  * @var string ERR_BAD_TABLE
  * The error message sent when the given table does not matchs its service.
  */
@@ -141,85 +142,95 @@ const NODE_ERROR = 'error';
  */
 const NODE_KEY = 'key';
 /****************************************
-************ URL PARAMS KEYS ************
-*****************************************/
+ ************ URL PARAMS KEYS ************
+ *****************************************/
 /**
-* @var string KEY_SERVICE
-* The parameter key that defines a service name
-*/
+ * @var string KEY_SERVICE
+ * The parameter key that defines a service name
+ */
 const KEY_SERVICE = 'service';
 /**
-* @var string KEY_TASK
-* The parameter key that defines a service task
-*/
+ * @var string KEY_TASK
+ * The parameter key that defines a service task
+ */
 const KEY_TASK = 'task';
 /**
-* @var string KEY_PRETTY_PRINT
-* The parameter key that defines a service task
-*/
+ * @var string KEY_PRETTY_PRINT
+ * The parameter key that defines a service task
+ */
 const KEY_PRETTY_PRINT = 'PP';
 /**
-* @var string PRETTY_PRINT_DARK
-* The parameter key that specifies a dark theme with pretty print
-*/
+ * @var string PRETTY_PRINT_DARK
+ * The parameter key that specifies a dark theme with pretty print
+ */
 const PRETTY_PRINT_DARK = 'Dark';
 /**
-* @var string PRETTY_PRINT_LIGHT
-* The parameter key that specifies a light theme with pretty print
-*/
+ * @var string PRETTY_PRINT_LIGHT
+ * The parameter key that specifies a light theme with pretty print
+ */
 const PRETTY_PRINT_LIGHT = 'Light';
 /****************************************
-************ Servicios Disponibles ******
-*****************************************/
+ ************ Servicios Disponibles ******
+ *****************************************/
 /**
-* @var string SERVICE_KNIGHT
-* The service name to administrate application users
-*/
+ * @var string SERVICE_KNIGHT
+ * The service name to administrate application users
+ */
 const SERVICE_KNIGHT = 'Knight';
 /**
-* @var string SERVICE_KNIGHT_GROUP
-* The service name to administrate application groups
-*/
+ * @var string SERVICE_KNIGHT_GROUP
+ * The service name to administrate application groups
+ */
 const SERVICE_KNIGHT_GROUP = 'Groups';
 /****************************************
-************ Available Tasks*************
-*****************************************/
+ ************ Available Tasks*************
+ *****************************************/
 /**
-* @var string TASK_ADD
-* The task name to add an element to the table
-*/
+ * @var string TASK_ADD
+ * The task name to add an element to the table
+ */
 const TASK_ADD = 'Add';
 /**
-* @var string TASK_CREATE
-* The task name used to create a category
-*/
+ * @var string TASK_CREATE
+ * The task name used to create a category
+ */
 const TASK_CREATE = 'Create';
 /**
-* @var string TASK_LOGIN
-* The task name that creates a login on the databse
-*/
+ * @var string TASK_LOGIN
+ * The task name that creates a login on the databse
+ */
 const TASK_LOGIN = 'Login';
 /**
-* @var string TASK_LINK
-* The task name to link an element to another
-*/
+ * @var string TASK_LOGOUT
+ * The task name that logouts from the database
+ */
+const TASK_LOGOUT = 'Logout';
+/**
+ * @var string TASK_GET
+ * The task name that gets data from the database
+ */
+const TASK_GET = 'Get';
+/**
+ * @var string TASK_LINK
+ * The task name to link an element to another
+ */
 const TASK_LINK = 'Link';
 /**
-* @var string TASK_SELECT
-* The task name to select an element to the table
-*/
+ * @var string TASK_SELECT
+ * The task name to select an element to the table
+ */
 const TASK_SELECT = 'Select';
 /*****************************************
-************ FUNCTION NAMES **************
-*****************************************/
+ ************ FUNCTION NAMES **************
+ *****************************************/
 /**
-* @var string F_POST
-* The name of the POST action function
-*/
+ * @var string F_POST
+ * The name of the POST action function
+ */
 const F_POST = 'POST_action';
 /**
-* @var string F_GET
-* The name of the GET action function
-*/
+ * @var string F_GET
+ * The name of the GET action function
+ */
 const F_GET = 'GET_action';
 ?>
