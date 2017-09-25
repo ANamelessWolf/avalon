@@ -1,0 +1,40 @@
+{
+    "services": [
+        {
+            "title": "Get Units",
+            "url": "AvalonService.php/Service/Unit/",
+            "method": "GET",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "Service",
+                        "param_value": "Unit",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "unit_id",
+                        "param_type": "integer"
+                    }
+                ]
+            },
+            "response": {
+                "success": {
+                    "code": 200,
+                    "content": {
+                        "result": [
+                            {
+                                "unit_id": 1,
+                                "unit": "unitless",
+                                "symbol": "[ ]"
+                            }
+                        ],
+                        "query_result": true,
+                        "error": ""
+                    }
+                }
+            }
+        }
+    ]
+}
