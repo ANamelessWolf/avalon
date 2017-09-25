@@ -151,13 +151,13 @@ class UserService extends HasamiWrapper
                 $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, GROUP_RECYCLE_BIN);
             }
             else if ($acc->is_permitted(GROUP_ADMIN_GRP, TRUE)) {
-                $grps = $session_data->{GRP_SESSION};
+                $grps = $session_data[GRP_SESSION];
                 $grp_str = "";
                 foreach ($grps as &$group)
                     $grp_str .= "'" . $group . "', ";
                 $grp_str = substr($grp_str, 0, strlen($grp_str) - 2);
                 $query = "SELECT * FROM `%s` WHERE `%s` IN (%s)";
-                $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, $grps_str);
+                $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, $grp_str);
             }
             else {
                 http_response_code(401);
@@ -210,5 +210,8 @@ class UserService extends HasamiWrapper
         $u_g = new HasamiWrapper(USER_GROUP_TABLE, KNIGHT_FIELD_ID, new CDMXId());
         return $u_g->parser;
     }
+
+
+
 }
 ?>
