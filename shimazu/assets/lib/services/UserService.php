@@ -7,6 +7,7 @@ include_once "/../../../../urabe/Warai.php";
 //Avalon
 include_once "/../../../../avalon/services/KnightService.php";
 include_once "/../../../../avalon/MorganaUtils.php";
+include_once "/../../../../avalon/Chivalry.php";
 //CDMX
 include_once "/../AppConst.php";
 include_once "/../AppAccess.php";
@@ -141,11 +142,33 @@ class UserService extends HasamiWrapper
      */
     public function get_users()
     {
-        $acc = new AppAccess();
+        try {
+            $acc = new AppAccess();
+            $session_data = check_session(array(USER_FIELD_ID, USER_FIELD_NAME));
+            if ($acc->is_permitted(GROUP_SUPER, TRUE)) {
+            //Se ignorá solo el usuario Recycler
+                $query = "SELECT * FROM `%s` WHERE `%s`!= '%s'";
+                $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, GROUP_RECYCLE_BIN);
+            }
+            else if ($acc->is_permitted(GROUP_ADMIN_GRP, TRUE)) {
+                $grps = $session_data->{GRP_SESSION};
+                $grp_str = "";
+                foreach ($grps as &$group)
+                    $grp_str .= "'" . $group . "', ";
+                $grp_str = substr($grp_str, 0, strlen($grp_str) - 2);
+                $query = "SELECT * FROM `%s` WHERE `%s` IN (%s)";
+                $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, $grps_str);
+            }
+            else {
+                http_response_code(401);
+                throw new Exception(ERR_ACCESS_DENIED);
+            }
+           $response = $this->connector->select($query,$this->parser);
 
-        if ($acc->is_permitted(GROUP_SUPER)) {
-           $session = 
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
         }
+        return $response;
     }
     /**
      * Obtiene los datos de inicio de sesión de un usuario

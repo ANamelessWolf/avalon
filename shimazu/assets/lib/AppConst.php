@@ -101,16 +101,6 @@ const USER_FIELD_ID = 'clv_usuario';
  */
 const USER_FIELD_NAME = 'nombre';
 /**
- * @var string USER_FIELD_USERNAME
- * El nombre para el campo nombre de usuario.
- */
-const USER_FIELD_USERNAME = 'nom_usuario';
-/**
- * @var string USER_FIELD_PASSWORD
- * El nombre para el campo contraseña de usuario.
- */
-const USER_FIELD_PASSWORD = 'pwd_usuario';
-/**
  * @var string USER_FIELD_TYPE
  * El nombre para el campo tipo usuario.
  */
