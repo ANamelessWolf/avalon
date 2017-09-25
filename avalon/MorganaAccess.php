@@ -66,12 +66,14 @@ class MorganaAccess
      * Checks if the user is permitted on a group
      *
      * @param string $group_name The name of the group
+     * @param string $session_started If the session has not started a new one is started.
      * @return boolean True if the user is permitted on the group
      */
-    public function is_permitted($group_name)
+    public function is_permitted($group_name, $session_started = FALSE)
     {
         //There are two types of groups, level access and name access
-        start_session();
+        if (!$session_started)
+            start_session();
         //Nameless always have access
         if (isset($_SESSION[USR_ACCESS_SESSION]) && in_array(ADMIN_KEY, $_SESSION[USR_ACCESS_SESSION]))
             return TRUE;
