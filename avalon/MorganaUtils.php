@@ -72,6 +72,33 @@ function start_session()
         session_start();
 }
 /**
+ * Checks the current session status
+ *
+ * @param string[] The session field names
+ * @return mixed[] The session values
+ */
+function check_session($session_fields)
+{
+    start_session();
+    $result = array();
+    //Always check this fields
+    $special_fields = array(USR_ACCESS_SESSION, GRP_SESSION, USER_SESSION);
+    foreach ($special_fields as &$field)
+        if (!in_array($field, $session_fields))
+        array_push($session_fields, $field);
+    //Get the session fields        
+    $count = count($session_fields);
+    for ($i = 0; $i < $count; $i++) {
+        $key = $session_fields[$i];
+        if (isset($_SESSION[$key]))
+            $value = $_SESSION[$key];
+        else
+            $value = NULL;
+        $result[$key] = $value;
+    }
+    return $result;
+}
+/**
  * Runs a task with restricted access
  *
  * @param MorganaAccess $access The current group access definition
