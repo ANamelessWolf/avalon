@@ -112,8 +112,8 @@ class UserService extends HasamiWrapper
      */
     public function check()
     {
-        start_session();
-        var_dump($_SESSION);
+        $session = check_session(array(USER_FIELD_ID, USER_FIELD_NAME));
+        return service_response($session, TRUE);
     }
 
     /**

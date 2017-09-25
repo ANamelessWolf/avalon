@@ -56,7 +56,9 @@
                                 "user_access": [
                                     "{75EEB179-60A4-4485-9BE7-3D3E2DBCA757}"
                                 ],
-                                "groups": ["grp1"]
+                                "groups": [
+                                    "grp1"
+                                ]
                             },
                             "query_result": true,
                             "error": ""
@@ -81,6 +83,59 @@
                         }
                     }
                 ]
+            }
+        },
+        {
+            "title": "Check Session",
+            "url": "CDMXService.php/service/User/task/Check/",
+            "method": "POST",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "Check",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": null,
+            "response": {
+                "success": [
+                    {
+                        "code": 200,
+                        "content": {
+                            "result": {
+                                "user_name": "Wolf",
+                                "clv_usuario": "2",
+                                "nombre": "Beowulf",
+                                "user_access": [
+                                    "{75EEB179-60A4-4485-9BE7-3D3E2DBCA757}"
+                                ],
+                                "groups": [
+                                    "grp1"
+                                ]
+                            },
+                            "query_result": true,
+                            "error": ""
+                        }
+                    }
+                ],
+                "error": null
             }
         }
     ]
