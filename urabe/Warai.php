@@ -60,6 +60,11 @@ const ERR_MISS_INSERT_FIELDS = 'No insertion fields have been defined, "table_in
  */
 const ERR_MISS_UPDATE_FIELDS = 'No update fields have been defined, "table_update_fields" is NULL.';
 /**
+ * @var string ERR_MISS_PARAM
+ * The error message sent when a parameter is missing.
+ */
+const ERR_MISS_PARAM = "The parameter '%s' was not found on the response.";
+/**
  * @var string ERR_MISS_TABLE
  * The error message sent when the table does not exists.
  */
@@ -79,7 +84,11 @@ const ERR_NULL_BODY = 'An error occurred reading the message body, the body does
  * The error message sent when no service name is specified.
  */
 const ERR_INVALID_SERVICE = 'No service especified';
-
+/**
+ * @var string ERR_TASK_UNDEFINED
+ * The error message sent when the task is missing or not Defined.
+ */
+const ERR_TASK_UNDEFINED = "The given task was not found on the service";
 /***************************************
  ************** CAPTIONS ***************
  ***************************************/
@@ -176,6 +185,11 @@ const SERVICE_KNIGHT_GROUP = 'Groups';
 */
 const TASK_ADD = 'Add';
 /**
+* @var string TASK_CREATE
+* The task name used to create a category
+*/
+const TASK_CREATE = 'Create';
+/**
 * @var string TASK_LOGIN
 * The task name that creates a login on the databse
 */
@@ -190,4 +204,17 @@ const TASK_LINK = 'Link';
 * The task name to select an element to the table
 */
 const TASK_SELECT = 'Select';
+/*****************************************
+************ FUNCTION NAMES **************
+*****************************************/
+/**
+* @var string F_POST
+* The name of the POST action function
+*/
+const F_POST = 'POST_action';
+/**
+* @var string F_GET
+* The name of the GET action function
+*/
+const F_GET = 'GET_action';
 ?>

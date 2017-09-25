@@ -423,6 +423,8 @@ class Urabe
     {
         if (is_numeric($value))
             return strval($value);
+        else if (is_null($value))
+            return "NULL";
         else
             return sprintf("'%s'", $value);
     }

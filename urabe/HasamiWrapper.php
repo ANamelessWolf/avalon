@@ -131,19 +131,26 @@ class HasamiWrapper
     public function get_response($pretty_print = FALSE, $dark_theme = TRUE, $security = FALSE)
     {
         $result = "";
-        switch ($this->method) {
-            case 'GET' :
-                $result = call_user_func_array($this->GET->service_task, array($this));
-                break;
-            case 'PUT' :
-                $result = call_user_func_array($this->PUT->service_task, array($this));
-                break;
-            case 'POST' :
-                $result = call_user_func_array($this->POST->service_task, array($this));
-                break;
-            case 'DELETE' :
-                $result = call_user_func_array($this->DELETE->service_task, array($this));
-                break;
+        try {
+            switch ($this->method) {
+                case 'GET' :
+                    if (is_string($this->GET->service_task))
+                        $result = $this->{$this->GET->service_task}($this);
+                    else
+                        $result = call_user_func_array($this->GET->service_task, array($this));
+                    break;
+                case 'PUT' :
+                    $result = call_user_func_array($this->PUT->service_task, array($this));
+                    break;
+                case 'POST' :
+                    $result = call_user_func_array($this->POST->service_task, array($this));
+                    break;
+                case 'DELETE' :
+                    $result = call_user_func_array($this->DELETE->service_task, array($this));
+                    break;
+            }
+        } catch (Exception $e) {
+            $result = error_response($e->getMessage());
         }
         if ($pretty_print)
             return pretty_print_format(json_decode($result), null, $dark_theme);

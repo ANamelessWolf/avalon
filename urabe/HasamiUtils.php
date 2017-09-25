@@ -234,4 +234,28 @@ function inject_if_not_in(&$object, $property_name, $property_value)
     if (!is_null($object) && !is_null($property_value) && !property_exists($object, $property_name))
         $object->{$property_name} = $property_value;
 }
+/**
+ * Runs a service petition via a specific task
+ *
+ * @param HasamiWrapper $service The web service
+ * @param callback $action The web service action
+ * @return string the 
+ */
+function send_service_petition($service, $action)
+{
+    try {
+        if (is_null($service->url_parameters) || !$service->url_parameters->exists(KEY_TASK)) {
+            http_response_code(400);
+            throw new Exception(ERR_TASK_UNDEFINED);
+        }
+        else {
+
+            $task = $service->url_parameters->parameters[KEY_TASK];
+            $response = $service->$action($task);
+        }
+    } catch (Exception $e) {
+        $response = error_response($e->getMessage());
+    }
+    return $response;
+}
 ?>

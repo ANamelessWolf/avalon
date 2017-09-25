@@ -69,11 +69,6 @@ const KNIGHT_RANK_FIELD_ID = 'rank_id';
  **************** Errors ***************
  ***************************************/
 /**
- * @var string ERR_TASK_UNDEFINED
- * The error message sent when the task is missing or not Defined.
- */
-const ERR_TASK_UNDEFINED = "The given task was not found on the service";
-/**
  * @var string ERR_UNKNOWN_GROUP
  * The error message sent when the group does not exists.
  */

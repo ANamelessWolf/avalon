@@ -19,11 +19,6 @@ class GETService extends HasamiRESTfulService
      */
     public $selections_by_get_vars;
     /**
-     * @var callback Defines the url parameter selection
-     * (HasamiWrapper $service)::string
-     */
-    public $url_parameter_selection;
-    /**
      * __construct
      *
      * Initialize a new instance of the GET Service class.
@@ -47,8 +42,16 @@ class GETService extends HasamiRESTfulService
     public function default_GET_action()
     {
         try {
-            $selection = selection_all($this);
-            return $selection->get_response();
+            $service = $this->web_service;
+            $url_params = $service->url_parameters;
+            if (!is_null($url_params) && $url_params->exists($service->primary_key_name)) {
+                $id = $url_params->parameters[$service->primary_key_name];
+                return $this->select_by_primary_key($id);
+            }
+            else {
+                $selection = selection_all($this);
+                return $selection->get_response();
+            }
         } catch (Exception $e) {
             return error_response($e->getMessage());
         }
@@ -74,41 +77,25 @@ class GETService extends HasamiRESTfulService
             return empty_response();
     }
     /**
-     * Gets a selection query using the url paramaters
-     * @throws Exception An exception is thrown when the url parameter method (selection_by_url_parameters) is not defined.
-     * @return string The server response
-     */
-    public function select_with_URL_parameters_vars()
-    {
-        if (is_null($this->url_parameter_selection))
-            throw new Exception(sprintf(ERR_METHOD_NOT_DEFINED, "selection_by_url_parameters"));
-        else
-            return $this->url_parameter_selection($this->web_service);
-    }
-    /**
-     * Adds a new GET var type selection
+     * Select all fields from the table that matches primary key value. 
      *
-     * @param Selection $selection
-     * @return void
+     * @param int $key_value The primary key value
+     * @param bool $decode_json Enables to get the response decoded as a PHP variable
+     * @return string|stdClass The server response
      */
-    public function add_GET_vars_type_selection($selection)
+    public function select_by_primary_key($key_value, $decode_json = FALSE)
     {
-        array_push($this->selections_by_get_vars, $selection);
-    }
-    /**
-     * Removes a GET var type selection
-     *
-     * @param int $index The index of the selection to remove
-     * @throws Exception An exception is thrown when the index is out of bounds.
-     * @return void
-     */
-    public function remove_at_GET_vars_type_selection($index)
-    {
-        $selection_count = count($this->selections_by_get_vars);
-        if ($index < 0 || $index >= $selection_count)
-            throw new Exception(sprintf(ERR_BAD_INDEX, $index));
-        unset($this->selections_by_get_vars[$i]);
-        $this->selections_by_get_vars = array_values($this->selections_by_get_vars);
+        try {
+            $service = $this->web_service;
+            $query = "SELECT * FROM `%s` WHERE `%s` = $key_value";
+            $query = sprintf($query, $service->table_name, $service->primary_key_name);
+            $response = $service->connector->select($query, $service->parser);
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        if ($decode_json)
+            $response = json_decode($response);
+        return $response;
     }
 }
 ?>
