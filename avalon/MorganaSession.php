@@ -56,7 +56,8 @@ class MorganaSession
             call_user_func_array($this->login_task, array($input));
         //Registramos al usuario
         $_SESSION[USER_SESSION] = $this->user_name;
-        $_SESSION[USR_ACCESS_SESSION] = $this->groups;
+        $_SESSION[USR_ACCESS_SESSION] = $this->user_access;
+        $_SESSION[GRP_SESSION] = $this->groups;
     }
     /**
      * Logout from the server
@@ -81,8 +82,11 @@ class MorganaSession
         $result = array();
         $count = count($this->session_fields);
         for ($i = 0; $i < $count; $i++) {
-            $key = $this->session_fields[i];
+            $key = $this->session_fields[$i];
+            if (isset($_SESSION[$key]))
             $value = $_SESSION[$key];
+        else
+            $value = NULL;
             $result[$key] = $value;
         }
         return $result;
