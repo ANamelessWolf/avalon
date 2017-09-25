@@ -137,6 +137,51 @@
                 ],
                 "error": null
             }
+        },
+        {
+            "title": "Log Out",
+            "url": "CDMXService.php/service/User/task/Logout/",
+            "method": "POST",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "Logout",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": null,
+            "response": {
+                "success": [
+                    {
+                        "code": 200,
+                        "content": {
+                            "result": {
+                                "msg": "Sesi\u00f3n cerrada."
+                            },
+                            "query_result": true,
+                            "error": ""
+                        }
+                    }
+                ],
+                "error": null
+            }
         }
     ]
 }

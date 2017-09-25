@@ -55,6 +55,12 @@ class UserService extends HasamiWrapper
             case TASK_LOGIN :
                 $response = $this->login();
                 break;
+            case TASK_LOGOUT :
+                $response = $this->logout();
+                break;
+            case TASK_GET :
+                $response = $this->get_users();
+                break;
             case CDMX_TASK_CHECK :
                 $response = $this->check();
                 break;
@@ -115,7 +121,32 @@ class UserService extends HasamiWrapper
         $session = check_session(array(USER_FIELD_ID, USER_FIELD_NAME));
         return service_response($session, TRUE);
     }
+    /**
+     * Cierra la sesión actual
+     *
+     * @return string La respuesta del servidor
+     */
+    public function logout()
+    {
+        end_session(array(USER_FIELD_ID, USER_FIELD_NAME));
+        $result = array(NODE_MSG => MSG_LOGOUT);
+        return service_response($result, TRUE);
+    }
+    /**
+     *
+     * Devuelve la colección de usarios guardados en el sistema si se trata de super
+     * o de un administrador
+     * 
+     * @return string La respuesta del servidor
+     */
+    public function get_users()
+    {
+        $acc = new AppAccess();
 
+        if ($acc->is_permitted(GROUP_SUPER)) {
+           $session = 
+        }
+    }
     /**
      * Obtiene los datos de inicio de sesión de un usuario
      * @param int $knight_id El id del usuario

@@ -65,14 +65,18 @@ const GROUP_RECYCLE_BIN = "recycle_bin";
  */
 const CDMX_TASK_CHECK = "Check";
 /****************************************
-************** Errores*******************
+************** Errores y Mensajes *******
 *****************************************/
 /**
 * @var string ERR_BAD_LOGIN
 * El resultado para cuando los datos de sesión son incorrectos.
 */
 const ERR_BAD_LOGIN = "Los datos de inicio de sesión son incorrectos.";
-
+/**
+* @var string MSG_LOGOUT
+* El mensaje cuando se cierra la sesión en la aplicación
+*/
+const MSG_LOGOUT = "Sesión cerrada.";
 /****************************************
 ** Nombres de tablas y campos de la BD **
 *****************************************/
@@ -381,6 +385,14 @@ const PHOTOGRAPHY_FIELD_DATE = 'fecha_ingreso';
  * El nombre del campo mapa de la fotografìa.
  */
 const PHOTOGRAPHY_FIELD_MAP = 'mapa';
+/****************************************
+************** Nodos ********************
+*****************************************/
+/**
+ * @var string NODE_MSG
+ * El nombre del nodo que guarda los mensajes
+ */
+const NODE_MSG = 'msg';
 /**
  * @var string MSG_NODE_PROJECT
  * El nombre para el nodo JSON que agrupa resultados de proyectos.
