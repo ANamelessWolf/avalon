@@ -78,7 +78,7 @@ class MorganaAccess
         if (isset($_SESSION[USR_ACCESS_SESSION]) && in_array(ADMIN_KEY, $_SESSION[USR_ACCESS_SESSION]))
             return TRUE;
         //First check if is about a level access
-        else if (array_key_exists($group_name) && isset($_SESSION[USR_ACCESS_SESSION])) {
+        else if (array_key_exists($group_name, $this->groups[$group_name]) && isset($_SESSION[USR_ACCESS_SESSION])) {
             $grps = $_SESSION[USR_ACCESS_SESSION];
             return in_array($this->groups[$group_name], $group_name);
         }
