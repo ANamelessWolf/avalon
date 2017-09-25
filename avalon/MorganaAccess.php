@@ -24,7 +24,7 @@ class MorganaAccess
             $this->groups == array(
                 GROUP_AVALON => CAMELOT_KEY,
                 GROUP_CHRONO => CHRONO_KEY,
-                GROUP_NAMELESS => ADMIN_KEY
+                GROUP_NAMELESS => THE_NAMELESS_KEY
             );
         }
         else
@@ -75,7 +75,7 @@ class MorganaAccess
         if (!$session_started)
             start_session();
         //Nameless always have access
-        if (isset($_SESSION[USR_ACCESS_SESSION]) && in_array(ADMIN_KEY, $_SESSION[USR_ACCESS_SESSION]))
+        if (isset($_SESSION[USR_ACCESS_SESSION]) && in_array(THE_NAMELESS_KEY, $_SESSION[USR_ACCESS_SESSION]))
             return TRUE;
         //First check if is about a level access
         else if (array_key_exists($group_name, $this->groups) && isset($_SESSION[USR_ACCESS_SESSION])) {
