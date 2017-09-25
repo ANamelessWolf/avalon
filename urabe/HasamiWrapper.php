@@ -133,16 +133,16 @@ class HasamiWrapper
         $result = "";
         switch ($this->method) {
             case 'GET' :
-                $result = get_server_response($this->GET, $this->enable_GET);
+                $result = $this->get_server_response($this->GET, $this->enable_GET);
                 break;
             case 'PUT' :
-                $result = get_server_response($this->PUT, $this->enable_PUT);
+                $result = $this->get_server_response($this->PUT, $this->enable_PUT);
                 break;
             case 'POST' :
-                $result = get_server_response($this->POST, $this->enable_POST);
+                $result = $this->get_server_response($this->POST, $this->enable_POST);
                 break;
             case 'DELETE' :
-                $result = get_server_response($this->DELETE, $this->enable_DELETE);
+                $result = $this->get_server_response($this->DELETE, $this->enable_DELETE);
                 break;
         }
         if ($pretty_print)
