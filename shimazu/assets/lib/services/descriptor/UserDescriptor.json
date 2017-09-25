@@ -182,6 +182,73 @@
                 ],
                 "error": null
             }
+        },
+        {
+            "title": "Get Users",
+            "url": "CDMXService.php/service/User/task/Get/",
+            "method": "POST",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "Get",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": null,
+            "response": {
+                "success": [
+                    {
+                        "code": 200,
+                        "content": {
+                            "result": [
+                                {
+                                    "knight_id": 3,
+                                    "user_name": "Administrador",
+                                    "clv_usuario": 3,
+                                    "nombre": "Admin - Direcci\u00f3n de Construcci\u00f3n de Obras p\u00fablicas",
+                                    "group_name": "dgop"
+                                },
+                                {
+                                    "knight_id": 5,
+                                    "user_name": "usr1",
+                                    "clv_usuario": 4,
+                                    "nombre": "Direcci\u00f3n de Construcci\u00f3n de Obras p\u00fablicas A",
+                                    "group_name": "dgop"
+                                }
+                            ],
+                            "query_result": true,
+                            "error": ""
+                        }
+                    }
+                ],
+                "error": [
+                    {
+                        "code": 401,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "Access denied"
+                        }
+                    }
+                ]
+            }
         }
     ]
 }
