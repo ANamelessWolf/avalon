@@ -39,33 +39,26 @@ class UserService extends HasamiWrapper
         $this->url_parameters = $url_params;
         $this->k_service = new KnightService($url_params, $db_id);
         $this->POST->service_task = function ($sender) {
-            return $this->POST_action();
+            return send_service_petition($this, F_POST);
         };
     }
     /**
      * Define la acción de POST del servicio
      *
+     * @param string $task La tarea seleccionada del servidor
      * @return string La respuesta del servidor
      */
-    public function POST_action()
+    public function POST_action($task)
     {
-        try {
-            if (is_null($this->url_parameters) || !$this->url_parameters->exists(KEY_TASK)) {
-                http_response_code(400);
+        switch ($task) {
+            case TASK_LOGIN :
+                $response = $this->login();
+                break;
+            case CDMX_TASK_CHECK :
+                $response = $this->check();
+                break;
+            default :
                 throw new Exception(ERR_TASK_UNDEFINED);
-            }
-            else {
-                $task = $this->url_parameters->parameters[KEY_TASK];
-                switch ($task) {
-                    case TASK_LOGIN :
-                        $response = $this->login();
-                        break;
-                    default :
-                        throw new Exception(ERR_TASK_UNDEFINED);
-                }
-            }
-        } catch (Exception $e) {
-            $response = error_response($e->getMessage());
         }
         return $response;
     }
@@ -92,11 +85,15 @@ class UserService extends HasamiWrapper
                         $session->login();
                         $response = $session->get_response();
                     }
-                    else
+                    else {
+                        http_response_code(401);
                         throw new Exception(ERR_BAD_LOGIN);
+                    }
                 }
-                else
+                else {
+                    http_response_code(401);
                     throw new Exception(ERR_BAD_LOGIN);
+                }
             }
             else {
                 http_response_code(400);
@@ -107,6 +104,17 @@ class UserService extends HasamiWrapper
         }
         return $response;
     }
+    /**
+     * Revisa la sesión de los datos de sesión del usuario actual
+     *
+     * @return string La respuesta del servidor
+     */
+    public function check()
+    {
+        $session = new AppSession($u_data);
+        $session->check();
+    }
+
     /**
      * Obtiene los datos de inicio de sesión de un usuario
      * @param int $knight_id El id del usuario

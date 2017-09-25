@@ -55,6 +55,15 @@ const GROUP_CDMX_USER = "cdmx_user";
  * El nombre del grupo papelera de reciclaje
  */
 const GROUP_RECYCLE_BIN = "recycle_bin";
+
+/****************************************
+************** Tasks *******************
+*****************************************/
+/**
+ * @var string TASK_LOGIN
+ * El nombre del grupo papelera de reciclaje
+ */
+const CDMX_TASK_CHECK = "Checar";
 /****************************************
 ************** Errores*******************
 *****************************************/

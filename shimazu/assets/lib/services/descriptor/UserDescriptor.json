@@ -1,0 +1,87 @@
+{
+    "services": [
+        {
+            "title": "Login",
+            "url": "CDMXService.php/service/User/task/Login/",
+            "method": "POST",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "Login",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": {
+                "parameters": [
+                    {
+                        "param_name": "user_name",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "password",
+                        "param_type": "string"
+                    }
+                ],
+                "example": {
+                    "user_name": "Wolf-sama",
+                    "password": "Necron98"
+                }
+            },
+            "response": {
+                "success": [
+                    {
+                        "code": 200,
+                        "content": {
+                            "result": {
+                                "user_name": "Wolf",
+                                "clv_usuario": "2",
+                                "nombre": "Beowulf",
+                                "user_access": [
+                                    "{75EEB179-60A4-4485-9BE7-3D3E2DBCA757}"
+                                ],
+                                "groups": ["grp1"]
+                            },
+                            "query_result": true,
+                            "error": ""
+                        }
+                    }
+                ],
+                "error": [
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "An error ocurred parsing the message body. The body message is null or invalid"
+                        }
+                    },
+                    {
+                        "code": 401,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "Los datos de inicio de sesi\u00f3n son incorrectos."
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
