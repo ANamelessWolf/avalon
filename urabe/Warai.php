@@ -182,6 +182,11 @@ const SERVICE_KNIGHT = 'Knight';
  * The service name to administrate application groups
  */
 const SERVICE_KNIGHT_GROUP = 'Groups';
+/**
+ * @var string SERVICE_MSYU_UNIT
+ * The service name to administrate application groups
+ */
+const SERVICE_MSYU_UNIT = 'Units';
 /****************************************
  ************ Available Tasks*************
  *****************************************/

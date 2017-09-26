@@ -27,6 +27,4 @@ class UnitService extends HasamiWrapper
         $this->url_parameters = $url_params;
     }
 }
-$cat = new UnitService(new HasamiURLParameters());
-echo $cat->get_response();
 ?>

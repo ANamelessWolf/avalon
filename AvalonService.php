@@ -6,6 +6,10 @@ include_once "urabe/Warai.php";
 //Avalon
 include_once "avalon/services/KnightService.php";
 include_once "avalon/services/KnightGroupService.php";
+//Msyu
+include_once "msyu/services/UnitService.php";
+
+
 try {
     $url_params = new HasamiURLParameters();
     $response = "";
@@ -18,6 +22,9 @@ try {
                 break;
             case SERVICE_KNIGHT_GROUP :
                 $service = new KnightGroupService($url_params);
+                break;
+            case SERVICE_MSYU_UNIT :
+                $service = new UnitService($url_params);
                 break;
             default :
                 throw new Exception(ERR_INVALID_SERVICE);
