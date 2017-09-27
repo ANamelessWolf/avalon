@@ -111,7 +111,7 @@ class UserService extends HasamiWrapper
             }
             else {
                 http_response_code(400);
-                throw new Exception(sprintf(ERR_INCOMPLETE_BODY, TASK_LOGIN, KNIGHT_FIELD_NAME . ", " . KKNIGHT_FIELD_PASS));
+                throw new Exception(sprintf(ERR_INCOMPLETE_BODY, TASK_LOGIN, KNIGHT_FIELD_NAME . ", " . KNIGHT_FIELD_PASS));
             }
         } catch (Exception $e) {
             $response = error_response($e->getMessage());
