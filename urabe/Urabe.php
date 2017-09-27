@@ -147,9 +147,8 @@ class Urabe
         $result = NULL;
         if ($this->is_connected) {
             $query_result = $this->connection->query($query);
-            if ($query_result) {
-                while (is_null($result) && $row = $query_result->fetch_assoc())
-                    $result = $row;
+            if (!is_null($query_result) && $query_result) {
+                $result = $query_result->fetch_assoc();
             }
             else
                 $this->error = $this->connection->error;
