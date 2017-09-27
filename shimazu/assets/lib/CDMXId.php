@@ -17,7 +17,7 @@ class CDMXId extends KanojoX
      */
     function __construct()
     {
-        $this->db_name = "cdmx_obras";
+        $this->db_name = "obras";
         $this->host = "127.0.0.1";
         $this->user_name = "root";
         $this->password = "";
