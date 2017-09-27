@@ -19,11 +19,14 @@ class KnightGroupService extends HasamiWrapper
      * __construct
      *
      * Initialize a new instance of the Knight Service
+     * @param KanojoX $db_id The connection object
      * @param string $url_params The url parameters
      */
-    function __construct($url_params = NULL)
+    function __construct($url_params = NULL, $db_id = NULL)
     {
-        parent::__construct(KNIGHT_GRP_TABLE, KNIGHT_GRP_FIELD_ID, new Excalibur());
+        if (is_null($db_id))
+            $db_id = new Excalibur();
+        parent::__construct(KNIGHT_GRP_TABLE, KNIGHT_GRP_FIELD_ID, $db_id);
         $this->url_parameters = $url_params;
         //Se agregá seguridad al servicio de crear
         $this->POST->service_task = function ($sender) {

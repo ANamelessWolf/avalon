@@ -30,7 +30,7 @@ class Urabe
      * @var KanojoX $database_id 
      * Defines the connection id to the database.
      */
-    private $database_id;
+    public $database_id;
     /**
      * @var mysqli $connection 
      * Defines the MySql connection.

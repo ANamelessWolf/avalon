@@ -18,13 +18,16 @@ class KnightServiceRanking extends HasamiWrapper
      * __construct
      *
      * Initialize a new instance of the Knight Service
-     * @param string $url_params The url parameters
+     * @param HasamiURLParameters $url_params The url parameters
+     * @param KanojoX $db_id The connection object
      */
-    function __construct($url_params = NULL)
+    function __construct($url_params = NULL, $db_id = NULL)
     {
-        parent::__construct(KNIGHT_RANK_TABLE, KNIGHT_RANK_FIELD_ID, new Excalibur());
+        if (is_null($db_id))
+            $db_id = new Excalibur();
+        parent::__construct(KNIGHT_RANK_TABLE, KNIGHT_RANK_FIELD_ID, $db_id);
         $this->url_parameters = $url_params;
-        $post_query = sprintf("SELECT * FROM `%s` ORDER BY %s DESC LIMIT %d", $this->web_service->table_name, $this->web_service->primary_key_name, $limit_total);
+        $post_query = sprintf("SELECT * FROM `%s` ORDER BY %s DESC LIMIT %d", $this->table_name, $this->primary_key_name, 1);
     }
     /**
      * Adds a user to a group using its ids

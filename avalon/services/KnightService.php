@@ -120,14 +120,14 @@ class KnightService extends HasamiWrapper
      */
     public function join_group($user_id = NULL, $group_name = NULL)
     {
-        $g_service = new KnightGroupService(NULL);
+        $g_service = new KnightGroupService($this->url_parameters, $this->connector->database_id);
         try {
             inject_if_not_in($this->body, KNIGHT_GRP_FIELD_NAME, $group_name);
             inject_if_not_in($this->body, KNIGHT_FIELD_ID, $user_id);
             //Se obtiene el id del grupo para crear el link
             $group_name = $this->body->{KNIGHT_GRP_FIELD_NAME};
             $g_id = $g_service->GetGroupId($group_name);
-            $r_service = new KnightServiceRanking();
+            $r_service = new KnightServiceRanking($this->url_parameters, $this->connector->database_id);
             $response = $r_service->create_link($this->body->{KNIGHT_FIELD_ID}, $g_id);
             $r_service->close();
         } catch (Exception $e) {
