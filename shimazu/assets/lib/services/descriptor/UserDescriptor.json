@@ -249,6 +249,92 @@
                     }
                 ]
             }
+        },
+        {
+            "title": "Create User",
+            "url": "CDMXService.php/service/User/task/Login/",
+            "method": "POST",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "Create",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": {
+                "parameters": [
+                    {
+                        "param_name": "user_name",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "password",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "nombre",
+                        "param_type": "string"
+                    }
+                ],
+                "example": {
+                    "user_name": "Wolf-sama",
+                    "password": "Necron98",
+                    "nombre": "Beowulf XIII"
+                }
+            },
+            "response": {
+                "success": [
+                    {
+                        "code": 200,
+                        "content": {
+                            "result": [
+                                {
+                                    "clv_usuario": 6,
+                                    "nombre": "Usuario de prueba 1",
+                                    "knight_id": 6
+                                }
+                            ],
+                            "query_result": true,
+                            "error": ""
+                        }
+                    }
+                ],
+                "error": [
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "An error ocurred parsing the message body. The body message is null or invalid"
+                        }
+                    },
+                    {
+                        "code": 401,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "Los datos de inicio de sesi\u00f3n son incorrectos."
+                        }
+                    }
+                ]
+            }
         }
     ]
 }

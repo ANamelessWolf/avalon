@@ -65,6 +65,9 @@ class UserService extends HasamiWrapper
             case TASK_CREATE :
                 $response = $this->register_user();
                 break;
+            case CDMX_TASK_JOIN_GROUP :
+                $response = $this->join_group();
+                break;
             case CDMX_TASK_CHECK :
                 $response = $this->check();
                 break;
@@ -180,7 +183,57 @@ class UserService extends HasamiWrapper
      */
     public function register_user()
     {
-        $k_response = $this->k_service->join_the_realm();
+        try {
+            $access = new AppAccess();
+            //Se inserta en la tabla de knights
+            $k_response = run_restricted_task($this->k_service, $access, GROUP_ADMIN_GRP, "join_the_realm", TRUE);
+            if (has_result($k_response)) {
+            //Se inserta en la tabla de usuarios
+                inject_if_not_in($this->body, KNIGHT_FIELD_ID, $k_response->{NODE_RESULT}[0]->{KNIGHT_FIELD_ID});
+                $this->POST->table_insert_fields = array(USER_FIELD_NAME, KNIGHT_FIELD_ID);
+                $response = $this->POST->insert();
+                $response = json_decode($response);
+                inject_if_not_in($response, KNIGHT_FIELD_NAME, $this->body->{KNIGHT_FIELD_NAME});
+                return json_encode($response);
+
+            }
+            else
+                throw new Exception(sprintf(ERR_CREATING_USER, $k_response->{NODE_ERROR}));
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        return $response;
+    }
+    /**
+     * Agregá un usuario a un grupo especifico
+     *
+     * @return The server response
+     */
+    public function join_group()
+    {
+        try {
+            $access = new AppAccess();
+            if (is_null($this->body)) {
+                http_response_code(400);
+                throw new Exception(ERR_NULL_BODY);
+            }
+            else if ($this->body_has(USER_FIELD_ID, KNIGHT_GRP_FIELD_NAME)) {
+                $kId = $this->get_knight_id($this->body->{USER_FIELD_ID});
+                $group_name = $this->body->{KNIGHT_GRP_FIELD_NAME};
+                $response = $this->k_service->join_group($kId, $group_name);
+                $response = json_decode($response);
+                if (has_result($response)) {
+                    $knight_id = $response->{NODE_RESULT}[0]->{KNIGHT_FIELD_ID};
+                    $query = query_select_by_field(USER_GROUP_TABLE, KNIGHT_FIELD_ID, $knight_id);
+                    $response = $this->connector->select($query, $this->get_user_group_parser());
+                }
+                else
+                    throw new Exception($response->{NODE_ERROR});
+            }
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        return $response;
     }
     /**
      * Obtiene los datos de inicio de sesión de un usuario
@@ -211,6 +264,22 @@ class UserService extends HasamiWrapper
         }
         else
             return error_response(ERR_BAD_LOGIN);
+    }
+    /**
+     * Obtiene el id asignado en la tabla de knights
+     * @param int $clv_usuario La clave de usuario
+     * @return int El id del knight asignadao a una clave de usuario
+     */
+    public function get_knight_id($clv_usuario)
+    {
+        $query = "SELECT `%s` FROM `%s` WHERE `%s` = %d";
+        $query = sprintf($query, KNIGHT_FIELD_ID, USER_TABLE, USER_FIELD_ID, $clv_usuario);
+        $parser = $this->get_user_group_parser();
+        $result = $this->connector->select_one($query);
+        if (is_null($result))
+            throw new Exception($this->connector->error);
+        else
+            return intval($result);
     }
     /**
      * Obtiene el parser que utiliza la tabla de grupo de usuarios

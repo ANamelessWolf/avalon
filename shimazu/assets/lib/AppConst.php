@@ -65,10 +65,25 @@ const GROUP_RECYCLE_BIN = "recycle_bin";
  */
 const CDMX_TASK_CHECK = "Check";
 /**
- * @var string CDMX_TASK_CREATE
- * El nombre de la tarea que crea un nuevo usuario
+ * @var string CDMX_TASK_JOIN_GROUP
+ * El nombre de la tarea que agregá un usuario a un grupo
  */
-const CDMX_TASK_CREATE = "Create";
+const CDMX_TASK_JOIN_GROUP = "Join";
+/**
+ * @var string CDMX_TASK_LEAVE_GROUP
+ * El nombre de la tarea en la que un usuario abandona a un grupo
+ */
+const CDMX_TASK_LEAVE_GROUP = "Leave";
+/**
+ * @var string CDMX_TASK_CREATE_ADMIN
+ * El nombre de la tarea que crea un administrador
+ */
+const CDMX_TASK_CREATE_ADMIN = "NAdmin";
+/**
+ * @var string CDMX_TASK_CREATE_VIGILANT
+ * El nombre de la tarea que crea un vigilante
+ */
+const CDMX_TASK_CREATE_VIGILANT = "NVigilant";
 /****************************************
 ************** Errores y Mensajes *******
 *****************************************/
@@ -77,6 +92,11 @@ const CDMX_TASK_CREATE = "Create";
 * El resultado para cuando los datos de sesión son incorrectos.
 */
 const ERR_BAD_LOGIN = "Los datos de inicio de sesión son incorrectos.";
+/**
+* @var string ERR_CREATING_USER
+* El mensaje de error cuando no se puede crear el usuario
+*/
+const ERR_CREATING_USER = "No se pudo crear el usuario, detalles [%s].";
 /**
 * @var string MSG_LOGOUT
 * El mensaje cuando se cierra la sesión en la aplicación
