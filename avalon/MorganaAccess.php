@@ -21,7 +21,7 @@ class MorganaAccess
     public function __construct($groups = NULL)
     {
         if (is_null($groups)) {
-            $this->groups == array(
+            $this->groups = array(
                 GROUP_AVALON => CAMELOT_KEY,
                 GROUP_CHRONO => CHRONO_KEY,
                 GROUP_NAMELESS => THE_NAMELESS_KEY

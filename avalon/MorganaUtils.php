@@ -117,28 +117,35 @@ function check_session($session_fields)
     return $result;
 }
 /**
- * Runs a task with restricted access
+ * Runs a task with restricted access,
+ * Can recieved input parameters
  *
- * @param MorganaAccess $access The current group access definition
- * @param callback $task The task to call
- * @param mixed $params The parameters that receive the task
- * @return string The server response
+ * @param HasamiWrapper $sender The webservice that makes the request
+ * @param MorganaAccess $access The application current access
+ * @param string $group_name The group name that has permission to run the task
+ * @param string $task The name of the task to run with restricted access
+ * @param bool $json_decode If true the server response is returned as a PHP variable
+ * @return string|stdClass The server response
  */
-function run_restricted_task($access, $task, $params = NULL)
+function run_restricted_task($sender, $access, $group_name, $task, $json_decode = FALSE)
 {
-    if (is_permitted($group_name)) {
-        //Se agregan los parámetros dinámicos que recibe la función
-        $input = array();
-        $num_args = func_num_args();
-        for ($i = 2; $i < $num_args; $i++) {
-            $input_param = func_get_arg($i);
-            array_push($input, $input_param);
-        }
-        return call_user_func_array($task, $input);
+    //Guardamos los parámetros de entrada en caso de existir
+    $input = array();
+    for ($i = 5; $i < func_num_args(); $i++)
+        array_push($input, func_get_arg($i));
+    //Se checan los permisos de acceso
+    if ($access->is_permitted($group_name)) {
+        $response = call_user_func_array(array($sender, $task), $input);
     }
     else {
         http_response_code(403);
-        return error_response(ERR_ACCESS_DENIED);
+        $response = error_response(ERR_ACCESS_DENIED);
     }
+    if ($json_decode)
+        $response = json_decode($response);
+    return $response;
 }
+
+
+
 ?>
