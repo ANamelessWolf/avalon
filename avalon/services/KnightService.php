@@ -5,6 +5,7 @@ include_once "/../../alice/Caterpillar.php";
 include_once "/../Chivalry.php";
 include_once "/../Excalibur.php";
 include_once "/../MorganaUtils.php";
+include_once "/../MorganaAccess.php";
 include_once "KnightGroupService.php";
 include_once "KnightServiceRanking.php";
 /**
@@ -48,15 +49,16 @@ class KnightService extends HasamiWrapper
             }
             else {
                 $task = $this->url_parameters->parameters[KEY_TASK];
+                $access = new MorganaAccess();
                 switch ($task) {
                     case TASK_ADD :
-                        $response = $this->join_the_realm();
+                        $response = run_restricted_task($this, $access, GROUP_AVALON, "join_the_realm");
                         break;
                     case TASK_SELECT :
-                        $response = $this->get_user_id();
+                        $response = run_restricted_task($this, $access, GROUP_AVALON, "get_user_id");
                         break;
                     case TASK_LINK :
-                        $response = $this->join_group();
+                        $response = run_restricted_task($this, $access, GROUP_AVALON, "join_group");
                     default :
                         throw new Exception(ERR_TASK_UNDEFINED);
                 }
@@ -74,19 +76,21 @@ class KnightService extends HasamiWrapper
      */
     public function join_the_realm($user_name = NULL, $password = NULL)
     {
-        return run_restricted_task(GROUP_AVALON, function ($u, $p) {
-            $this->POST->table_insert_fields = array(KNIGHT_FIELD_NAME, KNIGHT_FIELD_PASS);
-            inject_if_not_in($this->body, KNIGHT_FIELD_NAME, $u);
-            inject_if_not_in($this->body, KNIGHT_FIELD_PASS, $p);
-            //Password must be encrypted
-            $cat = new Caterpillar();
-            $this->body->{KNIGHT_FIELD_PASS} = $cat->encrypt($this->body->{KNIGHT_FIELD_PASS});
-            $result = $this->POST->insert();
-            $result = json_decode($result);
-            //Ocultamos el password
-            unset($result->{NODE_RESULT}[0]->{KNIGHT_FIELD_PASS});
-            return json_encode($result);
-        }, $user_name, $password);
+        $this->POST->table_insert_fields = array(KNIGHT_FIELD_NAME, KNIGHT_FIELD_PASS);
+        inject_if_not_in($this->body, KNIGHT_FIELD_NAME, $user_name);
+        inject_if_not_in($this->body, KNIGHT_FIELD_PASS, $password);
+        if (is_null($this->body)) {
+            http_response_code(400);
+            throw new Exception(ERR_BODY_IS_NULL);
+        }
+        //Password must be encrypted
+        $cat = new Caterpillar();
+        $this->body->{KNIGHT_FIELD_PASS} = $cat->encrypt($this->body->{KNIGHT_FIELD_PASS});
+        $response = $this->POST->insert();
+        $response = json_decode($response);
+        //Ocultamos el password
+        unset($response->{NODE_RESULT}[0]->{KNIGHT_FIELD_PASS});
+        return json_encode($response);
     }
     /**
      * Gets the group id from a user name
@@ -96,18 +100,16 @@ class KnightService extends HasamiWrapper
      */
     public function get_user_id($user_name = NULL)
     {
-        return run_restricted_task(GROUP_AVALON, function ($u) {
-            inject_if_not_in($this->body, KNIGHT_FIELD_NAME, $u);
-            $query = "SELECT %s FROM %s WHERE %s = '%s'";
-            $query = sprintf(
-                $query,
-                KNIGHT_FIELD_ID,
-                $this->table_name,
-                KNIGHT_FIELD_NAME,
-                $this->body->{KNIGHT_FIELD_NAME}
-            );
-            return $this->connector->select($query, $this->parser);
-        }, $user_name);
+        inject_if_not_in($this->body, KNIGHT_FIELD_NAME, $user_name);
+        $query = "SELECT %s FROM %s WHERE %s = '%s'";
+        $query = sprintf(
+            $query,
+            KNIGHT_FIELD_ID,
+            $this->table_name,
+            KNIGHT_FIELD_NAME,
+            $this->body->{KNIGHT_FIELD_NAME}
+        );
+        return $this->connector->select($query, $this->parser);
     }
     /**
      * This function adds a user to a group by its id
@@ -118,22 +120,21 @@ class KnightService extends HasamiWrapper
      */
     public function join_group($user_id = NULL, $group_name = NULL)
     {
-        return run_restricted_task(GROUP_AVALON, function ($u_id, $g_name) {
-            $g_service = new KnightGroupService(NULL);
-            try {
-                inject_if_not_in($this->body, KNIGHT_GRP_FIELD_NAME, $group_name);
-                inject_if_not_in($this->body, KNIGHT_FIELD_ID, $u_id);
-                //Se obtiene el id del grupo para crear el link
-                $g_name = $this->body->{KNIGHT_GRP_FIELD_NAME};
-                $g_id = $g_service->GetGroupId($g_name);
-                $r_service = new KnightServiceRanking();
-                $response = $r_service->create_link($this->body->{KNIGHT_FIELD_ID}, $g_id);
-                $r_service->close();
-            } catch (Exception $e) {
-                $response = error_response($e->getMessage());
-            }
-            $g_service->close();
-        }, $user_id, $group_name);
+        $g_service = new KnightGroupService(NULL);
+        try {
+            inject_if_not_in($this->body, KNIGHT_GRP_FIELD_NAME, $group_name);
+            inject_if_not_in($this->body, KNIGHT_FIELD_ID, $user_id);
+            //Se obtiene el id del grupo para crear el link
+            $group_name = $this->body->{KNIGHT_GRP_FIELD_NAME};
+            $g_id = $g_service->GetGroupId($group_name);
+            $r_service = new KnightServiceRanking();
+            $response = $r_service->create_link($this->body->{KNIGHT_FIELD_ID}, $g_id);
+            $r_service->close();
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        $g_service->close();
+        return $response;
     }
     /**
      * Login to the server using a user name and a password
