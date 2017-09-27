@@ -60,10 +60,15 @@ const GROUP_RECYCLE_BIN = "recycle_bin";
 ************** Tasks *******************
 *****************************************/
 /**
- * @var string TASK_LOGIN
- * El nombre del grupo papelera de reciclaje
+ * @var string CDMX_TASK_CHECK
+ * El nombre de la tarea que revisa los datos del usuario
  */
 const CDMX_TASK_CHECK = "Check";
+/**
+ * @var string CDMX_TASK_CREATE
+ * El nombre de la tarea que crea un nuevo usuario
+ */
+const CDMX_TASK_CREATE = "Create";
 /****************************************
 ************** Errores y Mensajes *******
 *****************************************/

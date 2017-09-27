@@ -62,6 +62,9 @@ class UserService extends HasamiWrapper
             case TASK_GET :
                 $response = $this->get_users();
                 break;
+            case TASK_CREATE :
+                $response = $this->register_user();
+                break;
             case CDMX_TASK_CHECK :
                 $response = $this->check();
                 break;
@@ -169,6 +172,15 @@ class UserService extends HasamiWrapper
             $response = error_response($e->getMessage());
         }
         return $response;
+    }
+    /**
+     * Registra un nuevo usuario en la base de datos
+     *
+     * @return string La respuesta del servidor
+     */
+    public function register_user()
+    {
+        $k_response = $this->k_service->join_the_realm();
     }
     /**
      * Obtiene los datos de inicio de sesión de un usuario
