@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS `cdmx_obras`.`proyectos` (
   `empleos_generados` INT(8) NULL,
   `empleos_temporales` INT(8) NULL,
   `empleos_indirectos` INT(8) NULL,
-  `HHTSA` INT(8) NULL,
   `observaciones` VARCHAR(600) NULL,
   PRIMARY KEY (`clv_proyecto`),
   UNIQUE INDEX `clv_proyecto_UNIQUE` (`clv_proyecto` ASC),

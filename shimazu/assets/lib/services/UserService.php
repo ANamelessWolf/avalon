@@ -43,6 +43,51 @@ class UserService extends HasamiWrapper
         $this->POST->service_task = function ($sender) {
             return send_service_petition($this, F_POST);
         };
+        $this->DELETE->service_task = function ($sender) {
+            return send_service_petition($this, F_DELETE);
+        };
+        $this->PUT->service_task = function ($sender) {
+            return send_service_petition($this, F_PUT);
+        };
+    }
+    /**
+     * Define la acción de PUT del servicio
+     * Se puede actualizar solo el nombre y la contraseña
+     *
+     * @param string $task La tarea seleccionada del servidor
+     * @return string La respuesta del servidor
+     */
+    public function PUT_action($task)
+    {
+        try {
+            $is_null = is_null($this->body);
+            $has_name = property_exists($this->body, USER_FIELD_NAME);
+            $has_password = property_exists($this->body, KNIGHT_FIELD_PASS);
+            if ($is_null) {
+                http_response_code(400);
+                throw new Exception(sprintf(ERR_INCOMPLETE_BODY, USER_FIELD_ID));
+            }
+            else {
+                //Se actualiza la tabla de usuarios
+                if ($has_name) {
+                    $this->PUT->table_update_fields(USER_FIELD_NAME);
+                    $response_user = json_decode($this->PUT->update_by_field(USER_FIELD_ID));
+                }
+                else
+                    $response_user = service_response(array(NODE_STATUS => STATUS_NOT_MODIFIED), FALSE, "", FALSE);
+                //Se actualiza la tabla knights
+                if ($has_password) {
+                    $kId = $this->get_knight_id($this->body->{USER_FIELD_ID});
+                    $response_pass = $this->k_service->update_password($kId, $this->body->{KNIGHT_FIELD_PASS}, TRUE);
+                }
+                else
+                    $response_pass = service_response(array(NODE_STATUS => STATUS_NOT_MODIFIED), FALSE, "", FALSE);
+                return service_response(array($response_user, $response_pass), TRUE);
+            }
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        return $response;
     }
     /**
      * Define la acción de POST del servicio
@@ -67,6 +112,8 @@ class UserService extends HasamiWrapper
                 break;
             case CDMX_TASK_JOIN_GROUP :
                 $response = $this->join_group();
+            case CDMX_TASK_CREATE_ADMIN :
+                $response = $this->create_admin();
                 break;
             case CDMX_TASK_CHECK :
                 $response = $this->check();
@@ -76,6 +123,30 @@ class UserService extends HasamiWrapper
         }
         return $response;
     }
+    /**
+     * Borra un usuario de la base
+     *
+     * @param string $task La tarea seleccionada del servidor
+     * @return string La respuesta del servidor
+     */
+    public function DELETE_action($task)
+    {
+        try {
+            if ($this->body_has(USER_FIELD_ID)) {
+                $kId = $this->get_knight_id($this->body->{USER_FIELD_ID});
+                inject_if_not_in($this->k_service->body, KNIGHT_FIELD_ID, $kId);
+                $response = $this->k_service->get_response();
+            }
+            else {
+                http_response_code(400);
+                throw new Exception(sprintf(ERR_INCOMPLETE_BODY, USER_FIELD_ID));
+            }
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        return $response;
+    }
+
     /**
      * Esta función se encarga de iniciar sesión proporcionando un nombre de usuario y un password obtenidos
      * del body
@@ -153,8 +224,14 @@ class UserService extends HasamiWrapper
             $session_data = check_session(array(USER_FIELD_ID, USER_FIELD_NAME));
             if ($acc->is_permitted(GROUP_SUPER, TRUE)) {
             //Se ignorá solo el usuario Recycler
-                $query = "SELECT * FROM `%s` WHERE `%s`!= '%s'";
-                $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, GROUP_RECYCLE_BIN);
+                if ($this->body(USER_FIELD_ID)) {
+                    $query = "SELECT * FROM `%s` WHERE `%s`!= '%s' AND `%s`== %d";
+                    $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, GROUP_RECYCLE_BIN, USER_FIELD_ID, $this->body->{USER_FIELD_ID});
+                }
+                else {
+                    $query = "SELECT * FROM `%s` WHERE `%s`!= '%s'";
+                    $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, GROUP_RECYCLE_BIN);
+                }
             }
             else if ($acc->is_permitted(GROUP_ADMIN_GRP, TRUE)) {
                 $grps = $session_data[GRP_SESSION];
@@ -162,8 +239,14 @@ class UserService extends HasamiWrapper
                 foreach ($grps as &$group)
                     $grp_str .= "'" . $group . "', ";
                 $grp_str = substr($grp_str, 0, strlen($grp_str) - 2);
-                $query = "SELECT * FROM `%s` WHERE `%s` IN (%s)";
-                $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, $grp_str);
+                if ($this->body(USER_FIELD_ID)) {
+                    $query = "SELECT * FROM `%s` WHERE `%s`!= '%s' AND `%s`== %d";
+                    $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, GROUP_RECYCLE_BIN, USER_FIELD_ID, $this->body->{USER_FIELD_ID});
+                }
+                else {
+                    $query = "SELECT * FROM `%s` WHERE `%s` IN (%s)";
+                    $query = sprintf($query, USER_GROUP_TABLE, KNIGHT_GRP_FIELD_NAME, $grp_str);
+                }
             }
             else {
                 http_response_code(401);
@@ -196,6 +279,36 @@ class UserService extends HasamiWrapper
                 inject_if_not_in($response, KNIGHT_FIELD_NAME, $this->body->{KNIGHT_FIELD_NAME});
                 return json_encode($response);
 
+            }
+            else
+                throw new Exception(sprintf(ERR_CREATING_USER, $k_response->{NODE_ERROR}));
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        return $response;
+    }
+    /**
+     * Crea un administrador en la aplicación
+     *
+     * @return La respuesta del servidor
+     */
+    public function create_admin()
+    {
+        try {
+            $access = new AppAccess();
+        //Se inserta en la tabla de knights
+            $k_response = run_restricted_task($this->k_service, $access, GROUP_SUPER, "join_the_realm", TRUE);
+            if (has_result($k_response)) {
+            //Se inserta en la tabla de usuarios
+                inject_if_not_in($this->body, KNIGHT_FIELD_ID, $k_response->{NODE_RESULT}[0]->{KNIGHT_FIELD_ID});
+                $this->POST->table_insert_fields = array(USER_FIELD_NAME, KNIGHT_FIELD_ID);
+                $response = $this->POST->insert();
+                $clv_usuario = $response->{NODE_RESULT}[0]->{USER_FIELD_ID};
+                inject_if_not_in($response, KNIGHT_FIELD_NAME, $this->body->{KNIGHT_FIELD_NAME});
+                //Se agregá la información del nuevo usuario y se agregá al grupo
+                inject_if_not_in($response, USER_FIELD_ID, $clv_usuario);
+                inject_if_not_in($response, KNIGHT_GRP_FIELD_NAME, GROUP_ADMIN_GRP);
+                $response = $this->join_group();
             }
             else
                 throw new Exception(sprintf(ERR_CREATING_USER, $k_response->{NODE_ERROR}));
@@ -291,7 +404,15 @@ class UserService extends HasamiWrapper
         $u_g = new HasamiWrapper(USER_GROUP_TABLE, KNIGHT_FIELD_ID, new CDMXId());
         return $u_g->parser;
     }
-
+    /**
+     * Close the connection to MySQL
+     * @return void
+     */
+    public function close()
+    {
+        $this->connector->close();
+        $this->k_service->close();
+    }
 
 
 }

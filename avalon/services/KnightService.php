@@ -151,5 +151,28 @@ class KnightService extends HasamiWrapper
         $response = $this->connector->select($query);
         return json_decode($response);
     }
+    /**
+     * Updates the password of the user
+     *
+     * @param int|null $k_id The knight id
+     * @param string|null $new_password The new password not encrypted
+     * @param bool $json_decode True if the result is decoded as a PHP variable
+     * @return string|stdClass The server response
+     */
+    public function update_password($k_id = NULL, $new_password = NULL, $json_decode = FALSE)
+    {
+        try {
+            inject_if_not_in($this->body, KNIGHT_FIELD_ID, $k_id);
+            inject_if_not_in($this->body, KNIGHT_FIELD_PASS, $new_password);
+            //Se encripta el nuevo password
+            $cat = new Caterpillar();
+            $this->body->{KNIGHT_FIELD_PASS} = $cat->encrypt($this->body->{KNIGHT_FIELD_PASS});
+            $this->PUT->table_update_fields = array(KNIGHT_FIELD_PASS);
+            $response = $this->PUT->update_by_field(KNIGHT_FIELD_ID);
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        return $json_decode ? json_decode($response) : $response;
+    }
 }
 ?>

@@ -113,7 +113,9 @@ CREATE TABLE `datos_geograficos` (
   `clv_proyecto` int(11) NOT NULL,
   `tipo_geometria` tinyint(3) NOT NULL,
   `latitud` double NOT NULL,
-  `longitud` double NOT NULL
+  `longitud` double NOT NULL,
+  `no_figura` TINYINT UNSIGNED NULL,
+  `loc_index` SMALLINT UNSIGNED NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -173,7 +175,8 @@ CREATE TABLE `historicos` (
   `escalatorio` double DEFAULT '0',
   `adicional` double DEFAULT '0',
   `extraordinaria` double DEFAULT '0',
-  `reclamos` double DEFAULT '0'
+  `reclamos` double DEFAULT '0',
+  `HHTSA` double DEFAULT '0',
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- --------------------------------------------------------
@@ -293,7 +296,6 @@ CREATE TABLE `proyectos` (
   `empleos_generados` int(8) DEFAULT NULL,
   `empleos_temporales` int(8) DEFAULT NULL,
   `empleos_indirectos` int(8) DEFAULT NULL,
-  `HHTSA` int(8) DEFAULT NULL,
   `observaciones` varchar(600) COLLATE utf8_spanish_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -418,7 +420,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 DROP TABLE IF EXISTS `user_groups`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user_groups`  AS  (select `knights`.`user_name` AS `user_name`,`usuarios`.`nombre` AS `nombre`,`knights_groups`.`group_name` AS `group_name` from (((`usuarios` join `knights`) join `knights_groups`) join `knights_ranking`) where ((`usuarios`.`knight_id` = `knights`.`knight_id`) and (`knights_groups`.`group_id` = `knights_ranking`.`group_id`) and (`knights`.`knight_id` = `knights_ranking`.`knight_id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `user_groups`  AS  (select `cdmx_obras`.`knights`.`knight_id` AS `knight_id`,`cdmx_obras`.`knights`.`user_name` AS `user_name`,`cdmx_obras`.`usuarios`.`clv_usuario` AS `clv_usuario`,`cdmx_obras`.`usuarios`.`nombre` AS `nombre`,`cdmx_obras`.`knights_groups`.`group_name` AS `group_name`,if((`cdmx_obras`.`knights_groups`.`group_name` = 'vigilante'),'Supervisor General',if((`cdmx_obras`.`knights_groups`.`group_name` = 'grp_admin'),'Administrador',if((`cdmx_obras`.`knights_groups`.`group_name` = 'super'),'Administrador General',`cdmx_obras`.`knights_groups`.`group_name`))) AS `nombre_grupo` from `cdmx_obras`.`usuarios` join `cdmx_obras`.`knights` join `cdmx_obras`.`knights_groups` join `cdmx_obras`.`knights_ranking` where ((`cdmx_obras`.`usuarios`.`knight_id` = `cdmx_obras`.`knights`.`knight_id`) and (`cdmx_obras`.`knights_groups`.`group_id` = `cdmx_obras`.`knights_ranking`.`group_id`) and (`cdmx_obras`.`knights`.`knight_id` = `cdmx_obras`.`knights_ranking`.`knight_id`)));
 
 --
 -- Índices para tablas volcadas

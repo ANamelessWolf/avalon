@@ -1,11 +1,11 @@
 <?php 
 /****************************************
-************ Servicios Disponibles ******
-*****************************************/
+ ************ Servicios Disponibles ******
+ *****************************************/
 /**
-* @var string SERVICE_USER
-* El nombre del servicio que administra a los usuarios
-*/
+ * @var string SERVICE_USER
+ * El nombre del servicio que administra a los usuarios
+ */
 const SERVICE_USER = 'User';
 /**
  * @var string VIGILANT_KEY
@@ -57,8 +57,8 @@ const GROUP_CDMX_USER = "cdmx_user";
 const GROUP_RECYCLE_BIN = "recycle_bin";
 
 /****************************************
-************** Tasks *******************
-*****************************************/
+ ************** Tasks *******************
+ *****************************************/
 /**
  * @var string CDMX_TASK_CHECK
  * El nombre de la tarea que revisa los datos del usuario
@@ -85,26 +85,36 @@ const CDMX_TASK_CREATE_ADMIN = "NAdmin";
  */
 const CDMX_TASK_CREATE_VIGILANT = "NVigilant";
 /****************************************
-************** Errores y Mensajes *******
-*****************************************/
+ ************** Errores y Mensajes *******
+ *****************************************/
 /**
-* @var string ERR_BAD_LOGIN
-* El resultado para cuando los datos de sesión son incorrectos.
-*/
+ * @var string ERR_BAD_LOGIN
+ * El resultado para cuando los datos de sesión son incorrectos.
+ */
 const ERR_BAD_LOGIN = "Los datos de inicio de sesión son incorrectos.";
 /**
-* @var string ERR_CREATING_USER
-* El mensaje de error cuando no se puede crear el usuario
-*/
+ * @var string ERR_CREATING_USER
+ * El mensaje de error cuando no se puede crear el usuario
+ */
 const ERR_CREATING_USER = "No se pudo crear el usuario, detalles [%s].";
 /**
-* @var string MSG_LOGOUT
-* El mensaje cuando se cierra la sesión en la aplicación
-*/
+ * @var string ERR_LOC_MISSING
+ * El mensaje de error cuando no se encuentran ubicaciones en el body
+ */
+const ERR_LOC_MISSING = "No se pudo crear el proyecto, se requiere por lo menos una ubicación.";
+/**
+ * @var string MSG_LOGOUT
+ * El mensaje cuando se cierra la sesión en la aplicación
+ */
 const MSG_LOGOUT = "Sesión cerrada.";
+/**
+ * @var string MSG_DFTL_NO_OBS
+ * El mensaje cuando no existe ninguna observación
+ */
+const MSG_DFTL_NO_OBS = "Ninguna observación.";
 /****************************************
-** Nombres de tablas y campos de la BD **
-*****************************************/
+ ** Nombres de tablas y campos de la BD **
+ *****************************************/
 /**
  * @var string USER_TABLE
  * El nombre de la tabla de usuarios.
@@ -139,7 +149,7 @@ const PROJECT_TABLE = 'proyectos';
  * @var string PROJECT_TABLE_LOCATION
  * El nombre de la tabla de ubicaciones de proyectos.
  */
-const PROJECT_TABLE_LOCATION ='proyecto_datos_geograficos';
+const PROJECT_TABLE_LOCATION = 'proyecto_datos_geograficos';
 /**
  * @var string PROJECT_FIELD_ID
  * El nombre para el campo clave de proyecto.
@@ -171,35 +181,45 @@ const PROJECT_FIELD_MONTO = 'monto_contrato';
  */
 const PROJECT_FIELD_NAME = 'nom_proyecto';
 /**
- * @var string PROJECT_FIELD_HHTSA
- * El nombre para el campo HHTSA de proyecto.
+ * @var string PROJECT_FIELD_EMP_IND
+ * El nombre para el campo empleos indirectos.
  */
-const PROJECT_FIELD_HHTSA = 'HHTSA';
+const PROJECT_FIELD_EMP_IND = 'empleos_indirectos';
+/**
+ * @var string PROJECT_FIELD_EMP_TMP
+ * El nombre para el campo empleos temporales.
+ */
+const PROJECT_FIELD_EMP_TMP = 'empleos_temporales';
+/**
+ * @var string PROJECT_FIELD_OBS
+ * El nombre para el campo observaciones.
+ */
+const PROJECT_FIELD_OBS = 'observaciones';
 /**
  * @var string PROJECT_FIELD_CONTRAC
  * El nombre para el campo contractual de proyecto.
  */
-const PROJECT_FIELD_CONTRAC= 'contractual';
+const PROJECT_FIELD_CONTRAC = 'contractual';
 /**
  * @var string PROJECT_FIELD_ESC
  * El nombre para el campo escalatorio de proyecto.
  */
-const PROJECT_FIELD_ESC= 'escalatorio';
+const PROJECT_FIELD_ESC = 'escalatorio';
 /**
  * @var string PROJECT_FIELD_ADD
  * El nombre para el campo adicional de proyecto.
  */
-const PROJECT_FIELD_ADD= 'adicional';
+const PROJECT_FIELD_ADD = 'adicional';
 /**
  * @var string PROJECT_FIELD_EXTRA
  * El nombre para el campo extraordinaria de proyecto.
  */
-const PROJECT_FIELD_EXTRA= 'extraordinaria';
+const PROJECT_FIELD_EXTRA = 'extraordinaria';
 /**
  * @var string PROJECT_FIELD_RECLAMOS
  * El nombre para el campo de reclamos.
  */
-const PROJECT_FIELD_RECLAMOS= 'reclamos';
+const PROJECT_FIELD_RECLAMOS = 'reclamos';
 /**
  * @var string PROGRAM_TABLE
  * El nombre de la tabla de programas.
@@ -401,8 +421,8 @@ const PHOTOGRAPHY_FIELD_DATE = 'fecha_ingreso';
  */
 const PHOTOGRAPHY_FIELD_MAP = 'mapa';
 /****************************************
-************** Nodos ********************
-*****************************************/
+ ************** Nodos ********************
+ *****************************************/
 /**
  * @var string NODE_MSG
  * El nombre del nodo que guarda los mensajes

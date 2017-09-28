@@ -29,5 +29,6 @@ try {
 } catch (Exception $e) {
     $response = error_response($e->getMessage());
 }
+$service->close();
 echo $response;
 ?>

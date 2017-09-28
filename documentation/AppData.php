@@ -96,6 +96,11 @@ const STATUS_TABLE_CREATED = 'Table created';
  */
 const STATUS_CREATED = 'Created';
 /**
+ * @var string STATUS_NOT_MODIFIED
+ * The status sended when an element is not modified
+ */
+const STATUS_NOT_MODIFIED = 'Not Modified';
+/**
  * @var string STATUS_ERROR
  * The status sended when an error is found
  */

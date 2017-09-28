@@ -229,6 +229,16 @@ const TASK_SELECT = 'Select';
  */
 const F_POST = 'POST_action';
 /**
+ * @var string F_PUT
+ * The name of the PUT action function
+ */
+const F_PUT = 'PUT_action';
+/**
+ * @var string F_DELETE
+ * The name of the DELETE action function
+ */
+const F_DELETE = 'DELETE_action';
+/**
  * @var string F_GET
  * The name of the GET action function
  */

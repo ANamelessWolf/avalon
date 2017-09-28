@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS `cdmx_obras`.`historicos` (
   `adicional` DOUBLE NULL DEFAULT 0,
   `extraordinaria` DOUBLE NULL DEFAULT 0,
   `reclamos` DOUBLE NULL DEFAULT 0,
+  `HHTSA` DOUBLE NULL DEFAULT 0,
   PRIMARY KEY (`id_captura`),
   UNIQUE INDEX `id_captura_UNIQUE` (`id_captura` ASC),
   INDEX `fk_partidas_programas_idx` (`clv_programa` ASC),

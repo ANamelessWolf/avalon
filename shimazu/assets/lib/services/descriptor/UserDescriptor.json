@@ -211,7 +211,20 @@
                     }
                 ]
             },
-            "body": null,
+            "body": [
+                null,
+                {
+                    "parameters": [
+                        {
+                            "param_name": "clv_usuario",
+                            "param_type": "integer"
+                        }
+                    ],
+                    "example": {
+                        "clv_usuario": "1"
+                    }
+                }
+            ],
             "response": {
                 "success": [
                     {
@@ -223,14 +236,16 @@
                                     "user_name": "Administrador",
                                     "clv_usuario": 3,
                                     "nombre": "Admin - Direcci\u00f3n de Construcci\u00f3n de Obras p\u00fablicas",
-                                    "group_name": "dgop"
+                                    "group_name": "grp_admin",
+                                    "nombre_grupo": "Administrador"
                                 },
                                 {
                                     "knight_id": 5,
                                     "user_name": "usr1",
                                     "clv_usuario": 4,
                                     "nombre": "Direcci\u00f3n de Construcci\u00f3n de Obras p\u00fablicas A",
-                                    "group_name": "dgop"
+                                    "group_name": "dgop",
+                                    "nombre_grupo": "dgop"
                                 }
                             ],
                             "query_result": true,
@@ -297,6 +312,88 @@
                     "user_name": "Wolf-sama",
                     "password": "Necron98",
                     "nombre": "Beowulf XIII"
+                }
+            },
+            "response": {
+                "success": [
+                    {
+                        "code": 200,
+                        "content": {
+                            "result": [
+                                {
+                                    "clv_usuario": 6,
+                                    "nombre": "Usuario de prueba 1",
+                                    "knight_id": 6
+                                }
+                            ],
+                            "query_result": true,
+                            "error": ""
+                        }
+                    }
+                ],
+                "error": [
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "An error ocurred parsing the message body. The body message is null or invalid"
+                        }
+                    },
+                    {
+                        "code": 401,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "Los datos de inicio de sesi\u00f3n son incorrectos."
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "title": "Join Group",
+            "url": "CDMXService.php/service/User/task/Join/",
+            "method": "POST",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "Join",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": {
+                "parameters": [
+                    {
+                        "param_name": "clv_usuario",
+                        "param_type": "integer"
+                    },
+                    {
+                        "param_name": "group_name",
+                        "param_type": "string"
+                    }
+                ],
+                "example": {
+                    "clv_usuario": "3",
+                    "password": "group_name",
+                    "nombre": "dgopa"
                 }
             },
             "response": {

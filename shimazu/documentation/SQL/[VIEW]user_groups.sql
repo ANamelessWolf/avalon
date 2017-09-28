@@ -5,7 +5,10 @@ CREATE  OR REPLACE VIEW `user_groups` AS
     `knights`.`user_name`, 
     `usuarios`.`clv_usuario`, 
     `usuarios`.`nombre`, 
-    `knights_groups`.`group_name` 
+    `knights_groups`.`group_name`, 
+    IF(`knights_groups`.`group_name`='vigilante', 'Supervisor General',
+    IF(`knights_groups`.`group_name`='grp_admin','Administrador',
+    IF(`knights_groups`.`group_name`='super', 'Administrador General',`knights_groups`.`group_name`))) as nombre_grupo
 FROM 
     `usuarios`,
     `knights`,

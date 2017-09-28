@@ -4,6 +4,8 @@ CREATE TABLE IF NOT EXISTS `cdmx_obras`.`datos_geograficos` (
   `tipo_geometria` TINYINT(3) NOT NULL,
   `latitud` DOUBLE NOT NULL,
   `longitud` DOUBLE NOT NULL,
+  `no_figura` TINYINT UNSIGNED NULL,
+  `loc_index` SMALLINT UNSIGNED NULL,
   PRIMARY KEY (`clv_dg`),
   UNIQUE INDEX `clv_dg_UNIQUE` (`clv_dg` ASC),
   INDEX `fk_datos_geograficos_proyectos_idx` (`clv_proyecto` ASC),
