@@ -392,8 +392,7 @@
                 ],
                 "example": {
                     "clv_usuario": "3",
-                    "password": "group_name",
-                    "nombre": "dgopa"
+                    "group_name": "dgopa"
                 }
             },
             "response": {
@@ -403,9 +402,12 @@
                         "content": {
                             "result": [
                                 {
+                                    "knight_id": 6,
+                                    "user_name": "Test1",
                                     "clv_usuario": 6,
                                     "nombre": "Usuario de prueba 1",
-                                    "knight_id": 6
+                                    "group_name": "dgop",
+                                    "nombre_grupo": "dgop"
                                 }
                             ],
                             "query_result": true,
@@ -415,19 +417,177 @@
                 ],
                 "error": [
                     {
+                        "code": 403,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "No se pudo crear el usuario, detalles [Access denied]."
+                        }
+                    },
+                    {
                         "code": 400,
                         "content": {
                             "result": [],
                             "query_result": false,
-                            "error": "An error ocurred parsing the message body. The body message is null or invalid"
+                            "error": "The group 'dgaop' doesn't exists on the database."
                         }
                     },
                     {
-                        "code": 401,
+                        "code": 400,
                         "content": {
                             "result": [],
                             "query_result": false,
-                            "error": "Los datos de inicio de sesi\u00f3n son incorrectos."
+                            "error": "No se encontro el usuario con el id [95]"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "title": "Delete User",
+            "url": "CDMXService.php/service/User/task/User/",
+            "method": "DELETE",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "User",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": {
+                "parameters": [
+                    {
+                        "param_name": "clv_usuario",
+                        "param_type": "integer"
+                    }
+                ],
+                "example": {
+                    "clv_usuario": "3"
+                }
+            },
+            "response": {
+                "success": [
+                    {
+                        "result": [],
+                        "query_result": true,
+                        "error": ""
+                    }
+                ],
+                "error": [
+                    {
+                        "code": 403,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "No se pudo borrar el usuario, detalles [Access denied]."
+                        }
+                    },
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "The given task was not found on the service"
+                        }
+                    },
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "The body does not contain enough data to Delete. Needed fields [clv_usuario]."
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "title": "Delete Group",
+            "url": "CDMXService.php/service/User/task/Groups/",
+            "method": "DELETE",
+            "url_params": {
+                "required": [
+                    {
+                        "param_name": "service",
+                        "param_value": "User",
+                        "param_type": "string"
+                    },
+                    {
+                        "param_name": "task",
+                        "param_value": "Groups",
+                        "param_type": "string"
+                    }
+                ],
+                "optional": [
+                    {
+                        "param_name": "PP",
+                        "param_value": [
+                            "Dark",
+                            "Light"
+                        ],
+                        "param_type": "string"
+                    }
+                ]
+            },
+            "body": {
+                "parameters": [
+                    {
+                        "param_name": "group_name",
+                        "param_type": "string"
+                    }
+                ],
+                "example": {
+                    "clv_usuario": "3"
+                }
+            },
+            "response": {
+                "success": [
+                    {
+                        "result": [],
+                        "query_result": true,
+                        "error": ""
+                    }
+                ],
+                "error": [
+                    {
+                        "code": 403,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "No se pudo borrar el usuario, detalles [Access denied]."
+                        }
+                    },
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "The given task was not found on the service"
+                        }
+                    },
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "The body does not contain enough data to Delete. Needed fields [clv_usuario]."
                         }
                     }
                 ]

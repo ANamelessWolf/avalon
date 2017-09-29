@@ -71,7 +71,13 @@ class ProjectService extends HasamiWrapper
                     if (has_result($response_project)) {
                         $response_program = $this->insert_program($response_project->{NODE_RESULT}[0]);
                         $response_location = $this->insert_location($this->body->{LOCATION_TABLE});
+
                     }
+                    else {
+                        http_response_code(409);
+                        throw new Exception($response_project->{NODE_ERROR});
+                    }
+
                 }
                 else {
                     http_response_code(400);
@@ -112,11 +118,10 @@ class ProjectService extends HasamiWrapper
      */
     public function insert_location($clv_proyecto, $locations)
     {
-        foreach ($locations as &$location) {
-            # code...
-        }
+        foreach ($locations as &$location)
+            inject_if_not_in($location, PROJECT_FIELD_ID, $clv_proyecto);
         $this->l_service->body = $locations;
-        $this->l_service->POST->insert_bulk();
+        return json_decode($this->l_service->POST->insert_bulk());
     }
     /**
      * Close the connection to MySQL

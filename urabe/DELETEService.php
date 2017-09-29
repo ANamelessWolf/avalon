@@ -33,12 +33,12 @@ class DELETEService extends HasamiRESTfulService
      * @throws Exception An exception is thrown When the body is null or when an error occurred on the update method.
      * @return The server response
      */
-    public function default_PUT_action()
+    public function default_DELETE_action()
     {
         try {
             if (is_null($this->web_service->body))
                 throw new Exception(ERR_NULL_BODY);
-            return $this->update_by_field($this->web_service->primary_key_name);
+            return $this->delete_by_field($this->web_service->primary_key_name);
         } catch (Exception $e) {
             return error_response($e->getMessage());
         }

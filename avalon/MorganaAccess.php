@@ -10,7 +10,7 @@ include_once "MorganaUtils.php";
 class MorganaAccess
 {
     /**
-     * @var string The application access groups
+     * @var string[] The application access groups
      */
     public $groups;
     /**
@@ -61,6 +61,20 @@ class MorganaAccess
                 array_push($session_data[USR_ACCESS_SESSION], $default_key);
             array_push($session_data[GRP_SESSION], $result->{KNIGHT_GRP_FIELD_NAME});
         }
+    }
+    /**
+     * Adds a new group to the current session
+     *
+     *  @param string $group_name The group name
+     *  @return void
+     */
+    public function AddGroup($group_name)
+    {
+        start_session();
+        if (array_key_exists($group_name, $this->groups))
+            array_push($_SESSION[USR_ACCESS_SESSION], $this->groups[$group_name]);
+        else
+            array_push($_SESSION[GRP_SESSION], $group_name);
     }
     /**
      * Checks if the user is permitted on a group

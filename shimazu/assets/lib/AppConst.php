@@ -103,6 +103,16 @@ const ERR_CREATING_USER = "No se pudo crear el usuario, detalles [%s].";
  */
 const ERR_LOC_MISSING = "No se pudo crear el proyecto, se requiere por lo menos una ubicación.";
 /**
+ * @var string ERR_USER_MISSING
+ * El mensaje de error cuando no se encuentran el id del usuario
+ */
+const ERR_USER_MISSING = "No se encontro el usuario con el id [%d]";
+/**
+ * @var string ERR_DEL_SYSTEM_GROUP
+ * El mensaje de error cuando se intenta borrar un grupo de sistema
+ */
+const ERR_DEL_SYSTEM_GROUP = "No se puede borrar un grupo de sistema [%s]";
+/**
  * @var string MSG_LOGOUT
  * El mensaje cuando se cierra la sesión en la aplicación
  */

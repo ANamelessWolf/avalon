@@ -112,6 +112,26 @@ class KnightService extends HasamiWrapper
         return $this->connector->select($query, $this->parser);
     }
     /**
+     * Erase a group by its name
+     *
+     * @param string $group_name The group name
+     * @return The server response
+     */
+    public function remove_group($group_name)
+    {
+        try {
+            $g_service = new KnightGroupService($this->url_parameters, $this->connector->database_id);
+            $g_id = $g_service->GetGroupId($group_name);
+            $g_id = json_decode($g_id);
+            $g_service->body = (object)array(KNIGHT_GRP_FIELD_ID => $g_id);
+            $response = $g_service->DELETE->default_DELETE_action();
+        } catch (Exception $e) {
+            $response = error_response($e->getMessage());
+        }
+        return $response;
+    }
+
+    /**
      * This function adds a user to a group by its id
      *
      * @param int $user_id The user id

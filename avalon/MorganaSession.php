@@ -91,5 +91,6 @@ class MorganaSession
         }
         return $result;
     }
+    
 }
 ?>

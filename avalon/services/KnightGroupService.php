@@ -54,7 +54,7 @@ class KnightGroupService extends HasamiWrapper
         );
         $id = $this->connector->select_one($query);
         if (is_null($id))
-            throw new Exception(ERR_UNKNOWN_GROUP);
+            throw new Exception(sprintf(ERR_UNKNOWN_GROUP, $group_name));
         else
             return intval($id);
     }

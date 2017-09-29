@@ -65,7 +65,7 @@ class UserService extends HasamiWrapper
             $has_password = property_exists($this->body, KNIGHT_FIELD_PASS);
             if ($is_null) {
                 http_response_code(400);
-                throw new Exception(sprintf(ERR_INCOMPLETE_BODY, USER_FIELD_ID));
+                throw new Exception(sprintf(ERR_INCOMPLETE_BODY, CAP_UPDATE, USER_FIELD_ID));
             }
             else {
                 //Se actualiza la tabla de usuarios
@@ -112,6 +112,7 @@ class UserService extends HasamiWrapper
                 break;
             case CDMX_TASK_JOIN_GROUP :
                 $response = $this->join_group();
+                break;
             case CDMX_TASK_CREATE_ADMIN :
                 $response = $this->create_admin();
                 break;
@@ -132,14 +133,29 @@ class UserService extends HasamiWrapper
     public function DELETE_action($task)
     {
         try {
-            if ($this->body_has(USER_FIELD_ID)) {
+            if ($task == SERVICE_USER && $this->body_has(USER_FIELD_ID)) {
                 $kId = $this->get_knight_id($this->body->{USER_FIELD_ID});
                 inject_if_not_in($this->k_service->body, KNIGHT_FIELD_ID, $kId);
                 $response = $this->k_service->get_response();
             }
+            else if ($task == SERVICE_KNIGHT_GROUP && $this->body_has(KNIGHT_GRP_FIELD_NAME)) {
+                $group_name = $this->body_has(KNIGHT_GRP_FIELD_NAME);
+                $access = new AppAccess();
+                if (array_key_exists($group_name, $access))
+                    throw new Exception(sprintf(ERR_DEL_SYSTEM_GROUP, $group_name));
+                else
+                    $response = $this->k_service->remove_group($group_name);
+            }
+            else if (!in_array($task, array(SERVICE_USER, SERVICE_KNIGHT_GROUP))) {
+                http_response_code(400);
+                throw new Exception(ERR_TASK_UNDEFINED);
+            }
             else {
                 http_response_code(400);
-                throw new Exception(sprintf(ERR_INCOMPLETE_BODY, USER_FIELD_ID));
+                if ($task == SERVICE_KNIGHT_GROUP)
+                    throw new Exception(sprintf(ERR_INCOMPLETE_BODY, CAP_DELETE, KNIGHT_GRP_FIELD_NAME));
+                else
+                    throw new Exception(sprintf(ERR_INCOMPLETE_BODY, CAP_DELETE, USER_FIELD_ID));
             }
         } catch (Exception $e) {
             $response = error_response($e->getMessage());
@@ -339,9 +355,12 @@ class UserService extends HasamiWrapper
                     $knight_id = $response->{NODE_RESULT}[0]->{KNIGHT_FIELD_ID};
                     $query = query_select_by_field(USER_GROUP_TABLE, KNIGHT_FIELD_ID, $knight_id);
                     $response = $this->connector->select($query, $this->get_user_group_parser());
+                    $access->AddGroup($group_name);
                 }
-                else
+                else {
+                    http_response_code(400);
                     throw new Exception($response->{NODE_ERROR});
+                }
             }
         } catch (Exception $e) {
             $response = error_response($e->getMessage());
@@ -390,7 +409,7 @@ class UserService extends HasamiWrapper
         $parser = $this->get_user_group_parser();
         $result = $this->connector->select_one($query);
         if (is_null($result))
-            throw new Exception($this->connector->error);
+            throw new Exception(sprintf(ERR_USER_MISSING, $clv_usuario));
         else
             return intval($result);
     }
