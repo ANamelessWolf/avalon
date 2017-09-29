@@ -571,7 +571,15 @@
                         "content": {
                             "result": [],
                             "query_result": false,
-                            "error": "No se pudo borrar el usuario, detalles [Access denied]."
+                            "error": "No se pudo borrar el grupo, detalles [Access denied]."
+                        }
+                    },
+                    {
+                        "code": 403,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "No se puede borrar un grupo de sistema [grp_admin]"
                         }
                     },
                     {
@@ -587,7 +595,15 @@
                         "content": {
                             "result": [],
                             "query_result": false,
-                            "error": "The body does not contain enough data to Delete. Needed fields [clv_usuario]."
+                            "error": "The body does not contain enough data to Delete. Needed fields [group_name]."
+                        }
+                    },
+                    {
+                        "code": 400,
+                        "content": {
+                            "result": [],
+                            "query_result": false,
+                            "error": "The group 'tmp1' doesn't exists on the database."
                         }
                     }
                 ]

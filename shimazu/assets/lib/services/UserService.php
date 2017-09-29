@@ -133,16 +133,24 @@ class UserService extends HasamiWrapper
     public function DELETE_action($task)
     {
         try {
+            $access = new AppAccess();
+            if (!$access->is_permitted(GROUP_ADMIN_GRP)) {
+                http_response_code(403);
+                throw new Exception(ERR_ACCESS_DENIED);
+            }
             if ($task == SERVICE_USER && $this->body_has(USER_FIELD_ID)) {
                 $kId = $this->get_knight_id($this->body->{USER_FIELD_ID});
+
                 inject_if_not_in($this->k_service->body, KNIGHT_FIELD_ID, $kId);
                 $response = $this->k_service->get_response();
             }
             else if ($task == SERVICE_KNIGHT_GROUP && $this->body_has(KNIGHT_GRP_FIELD_NAME)) {
-                $group_name = $this->body_has(KNIGHT_GRP_FIELD_NAME);
-                $access = new AppAccess();
-                if (array_key_exists($group_name, $access))
+                $group_name = $this->body->{KNIGHT_GRP_FIELD_NAME};
+
+                if (array_key_exists($group_name, $access->groups)) {
+                    http_response_code(403);
                     throw new Exception(sprintf(ERR_DEL_SYSTEM_GROUP, $group_name));
+                }
                 else
                     $response = $this->k_service->remove_group($group_name);
             }
