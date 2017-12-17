@@ -27,6 +27,14 @@ const UNIT_TABLE = 'units';
  * The name of the units id
  */
 const UNIT_FIELD_ID = 'unit_id';
+/****************************************
+ ************ Servicios Disponibles ******
+ *****************************************/
+/**
+ * @var string SERVICE_CATEGORY
+ * The service name to administrate appliction categories
+ */
+const SERVICE_CATEGORY = 'Category';
 /***************************************
  **************** Errors ***************
  ***************************************/
